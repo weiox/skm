@@ -4,7 +4,7 @@
 
 核心主线：
 
-**discover -> install -> organize -> verify -> update -> release**
+**discover -> install -> organize -> verify -> sync -> update -> release**
 
 ---
 
@@ -49,6 +49,7 @@
 - `find-skills`
 - `install-linked-agent-skills`
 - `organize-agent-skills`
+- `sync-agent-skills`
 - `update-vendor-skills`
 
 当前短板：
@@ -244,9 +245,8 @@
 
 建议优先顺序：
 
-1. `sync-agent-skills`
-2. `extract-agent-skill-pack`
-3. `release-agent-skill-pack`
+1. `extract-agent-skill-pack`
+2. `release-agent-skill-pack`
 
 ---
 
