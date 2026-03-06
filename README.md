@@ -19,7 +19,7 @@
 
 它的职责聚焦在这条链路：
 
-**discover -> install -> organize -> verify**
+**discover -> install -> organize -> verify -> update**
 
 ## 仓库边界
 
@@ -43,6 +43,7 @@
 - `find-skills`
 - `install-linked-agent-skills`
 - `organize-agent-skills`
+- `update-vendor-skills`
 
 ## 与 `agent-hub` 的关系
 
@@ -58,7 +59,8 @@ skills/
 ├── doctor-agent-skills/
 ├── find-skills/
 ├── install-linked-agent-skills/
-└── organize-agent-skills/
+├── organize-agent-skills/
+└── update-vendor-skills/
 ```
 
 ## 下一步
