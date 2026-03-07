@@ -33,7 +33,7 @@ Sync means:
 Run:
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skill-init/skills/sync-agent-skills/scripts/sync-agent-skills.sh
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/sync-agent-skills/scripts/sync-agent-skills.sh
 ```
 
 ## Workflow
@@ -45,7 +45,7 @@ If you are not sure what is wrong, run `doctor-agent-skills` first.
 ### 2. Run sync
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skill-init/skills/sync-agent-skills/scripts/sync-agent-skills.sh
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/sync-agent-skills/scripts/sync-agent-skills.sh
 ```
 
 ### 3. Read the diff-style output

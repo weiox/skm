@@ -9,7 +9,7 @@ DOTFILES_ROOT="${DOTFILES_ROOT:-$(cd "$AGENT_HUB_ROOT/../.." && pwd)}"
 VENDOR_ROOT="$AGENT_HUB_ROOT/skills/vendor"
 BOOTSTRAP_SCRIPT="$AGENT_HUB_ROOT/scripts/bootstrap.sh"
 CHECK_SCRIPT="$AGENT_HUB_ROOT/scripts/check.sh"
-SELF_PACKAGE="skill-init"
+SELF_PACKAGE="skm"
 
 usage() {
   cat <<'EOF'
@@ -18,7 +18,7 @@ Usage: update-vendor-skills.sh [package-name...]
 Examples:
   update-vendor-skills.sh
   update-vendor-skills.sh superpowers
-  update-vendor-skills.sh superpowers skill-init
+  update-vendor-skills.sh superpowers skm
 EOF
 }
 

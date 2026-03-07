@@ -1,6 +1,6 @@
-# skill-init
+# skm
 
-`skill-init` 是一组围绕 agent skills 生命周期的工作流技能包。
+`skm` 是一组围绕 agent skills 生命周期的工作流技能包。
 
 它解决的不是“某个领域怎么写代码”，而是：
 
@@ -11,7 +11,7 @@
 
 ## 定位
 
-把 `skill-init` 理解成：
+把 `skm` 理解成：
 
 - **skills about skills**
 - **agent skill lifecycle toolkit**
@@ -50,9 +50,9 @@
 
 ## 与 `agent-hub` 的关系
 
-- `skill-init` 是一个独立 skill 包仓库
+- `skm` 是一个独立 skill 包仓库
 - `agent-hub` 是本地的技能编排层与入口层
-- `agent-hub` 通过 vendor 目录消费 `skill-init`
+- `agent-hub` 通过 vendor 目录消费 `skm`
 - `bootstrap.sh` / `check.sh` 负责把这个包暴露给 `Codex` 和 `Claude Code`
 
 ## 仓库结构

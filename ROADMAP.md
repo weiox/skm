@@ -1,6 +1,6 @@
-# skill-init Roadmap
+# skm Roadmap
 
-`skill-init` 的目标不是变成“各种 skill 的大仓库”，而是成为 **agent skills 生命周期工具包**。
+`skm` 的目标不是变成“各种 skill 的大仓库”，而是成为 **agent skills 生命周期工具包**。
 
 核心主线：
 
@@ -67,11 +67,11 @@
 
 ## Phase 0: Clarify the Package
 
-目标：把 `skill-init` 从“能用”提升到“边界清晰”。
+目标：把 `skm` 从“能用”提升到“边界清晰”。
 
 ### P0-1. 固化仓库定位
 
-- 在 README 中明确 `skill-init` 是 skills lifecycle toolkit
+- 在 README 中明确 `skm` 是 skills lifecycle toolkit
 - 明确它与 `agent-hub` 的关系
 - 明确仓库的 in-scope / out-of-scope
 
@@ -96,7 +96,7 @@
 
 结果：
 
-- `skill-init` 不再只适用于单一机器布局
+- `skm` 不再只适用于单一机器布局
 - 更适合作为独立仓库公开复用
 
 ---
@@ -158,7 +158,7 @@
 
 价值：
 
-- 复用你刚完成的 `skill-init` 拆仓经验
+- 复用你刚完成的 `skm` 拆仓经验
 
 ### P2-2. `release-agent-skill-pack`
 
@@ -189,11 +189,11 @@
 
 ## Phase 3: Testing and Reliability
 
-目标：让 `skill-init` 仓库自己具备独立验证能力。
+目标：让 `skm` 仓库自己具备独立验证能力。
 
 ### P3-1. 仓库内测试迁移
 
-把与 `skill-init` 强相关的测试逐步迁到仓库内部：
+把与 `skm` 强相关的测试逐步迁到仓库内部：
 
 - 安装流程测试
 - vendor 接入测试
@@ -239,7 +239,7 @@
 
 ### 5. Lifecycle Over Collection
 
-`skill-init` 关心的是技能生命周期，而不是囤积更多 skill。
+`skm` 关心的是技能生命周期，而不是囤积更多 skill。
 
 ---
 
@@ -253,7 +253,7 @@
 
 ## Decision Rule
 
-如果以后想往 `skill-init` 里再加一个新 skill，先问：
+如果以后想往 `skm` 里再加一个新 skill，先问：
 
 **它是不是在解决 skill 的发现、导入、整理、校验、升级或发布问题？**
 

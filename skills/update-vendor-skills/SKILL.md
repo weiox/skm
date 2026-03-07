@@ -32,7 +32,7 @@ After every vendor update:
 Run the bundled script:
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skill-init/skills/update-vendor-skills/scripts/update-vendor-skills.sh [package-name...]
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/update-vendor-skills/scripts/update-vendor-skills.sh [package-name...]
 ```
 
 ## Workflow
@@ -48,11 +48,11 @@ bash ~/.dotfiles/.config/agent-hub/skills/vendor/skill-init/skills/update-vendor
 Examples:
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skill-init/skills/update-vendor-skills/scripts/update-vendor-skills.sh
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/update-vendor-skills/scripts/update-vendor-skills.sh
 
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skill-init/skills/update-vendor-skills/scripts/update-vendor-skills.sh superpowers
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/update-vendor-skills/scripts/update-vendor-skills.sh superpowers
 
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skill-init/skills/update-vendor-skills/scripts/update-vendor-skills.sh superpowers skill-init
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/update-vendor-skills/scripts/update-vendor-skills.sh superpowers skm
 ```
 
 ### 3. Read the result

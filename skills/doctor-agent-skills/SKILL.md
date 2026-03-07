@@ -34,7 +34,7 @@ Diagnose first, then fix.
 Run the doctor script before making cleanup changes:
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skill-init/skills/doctor-agent-skills/scripts/doctor-agent-skills.sh
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/doctor-agent-skills/scripts/doctor-agent-skills.sh
 ```
 
 ## What It Reports
@@ -50,7 +50,7 @@ The script classifies each entrypoint symlink as:
 ### 1. Run the doctor
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skill-init/skills/doctor-agent-skills/scripts/doctor-agent-skills.sh
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/doctor-agent-skills/scripts/doctor-agent-skills.sh
 ```
 
 ### 2. Read the categories
