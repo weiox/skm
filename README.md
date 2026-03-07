@@ -41,7 +41,7 @@
 
 `skm` 的做法是：
 
-- 明确 `agent-hub/skills` 才是技能源目录
+- 明确 `skm/skills`、`skm/personal`、`skm/vendor` 共同组成技能源目录
 - 用 `organize` 和 `sync` 把运行态重新拉回声明态
 
 ### 痛点 3：入口层经常坏，但很难查
@@ -81,7 +81,7 @@
 
 当前推荐的本地运行时模型是：
 
-- skills 的真实来源由 `agent-hub` 维护
+- skills 的真实来源由 `skm` 维护
 - `skm` 负责 skill 生命周期能力
 - `~/.skm/exports/shared` 作为统一导出层
 - `~/.claude/skills` 和 `~/.agents/skills` 指向这个共享导出层
@@ -113,7 +113,7 @@
 示例：
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-install-linked-agent-skills/scripts/skm-install-linked-skill.sh \
+bash ~/.skm/skills/skm-install-linked-agent-skills/scripts/skm-install-linked-skill.sh \
   "https://github.com/owner/repo"
 ```
 
@@ -133,9 +133,9 @@ bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-install-linked-a
 示例：
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-doctor-agent-skills/scripts/skm-doctor-agent-skills.sh
+bash ~/.skm/skills/skm-doctor-agent-skills/scripts/skm-doctor-agent-skills.sh
 
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-sync-agent-skills/scripts/skm-sync-agent-skills.sh
+bash ~/.skm/skills/skm-sync-agent-skills/scripts/skm-sync-agent-skills.sh
 ```
 
 适合的 skill：
@@ -155,9 +155,9 @@ bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-sync-agent-skill
 示例：
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-update-vendor-skills/scripts/skm-update-vendor-skills.sh
+bash ~/.skm/skills/skm-update-vendor-skills/scripts/skm-update-vendor-skills.sh
 
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-update-vendor-skills/scripts/skm-update-vendor-skills.sh superpowers
+bash ~/.skm/skills/skm-update-vendor-skills/scripts/skm-update-vendor-skills.sh superpowers
 ```
 
 适合的 skill：
@@ -175,12 +175,12 @@ bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-update-vendor-sk
 示例：
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-extract-agent-skill-pack/scripts/skm-extract-agent-skill-pack.sh \
-  ~/.dotfiles/.config/agent-hub/skills/personal \
+bash ~/.skm/skills/skm-extract-agent-skill-pack/scripts/skm-extract-agent-skill-pack.sh \
+  ~/.skm/personal \
   ~/tmp/my-skill-pack \
   alpha-skill beta-skill
 
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-release-agent-skill-pack/scripts/skm-release-agent-skill-pack.sh \
+bash ~/.skm/skills/skm-release-agent-skill-pack/scripts/skm-release-agent-skill-pack.sh \
   ~/tmp/my-skill-pack
 ```
 
@@ -200,17 +200,16 @@ bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-release-agent-sk
 - `skm-sync-agent-skills`：把运行态入口同步回声明态
 - `skm-update-vendor-skills`：更新 vendor skill 包并重建入口
 
-## 与 agent-hub 的关系
+## 目录模型
 
-你可以把两者理解成：
+`skm` 现在同时承担两层职责：
 
-- `skm`：技能生命周期能力包
-- `agent-hub`：本地技能编排层和入口层
+- `skills/`：`skm` 自带的内建 skills
+- `personal/`：你自己的 personal skills
+- `vendor/`：外部 skill 包，例如 `superpowers`
+- `exports/shared/`：给 `Claude Code` 和 `Codex` 共用的导出视图
 
-也就是说：
-
-- `skm` 提供“怎么发现、安装、整理、验证、同步、更新、发布”
-- `agent-hub` 负责“这些技能在本机上怎么挂载、怎么暴露给 agent”
+如果你在 `dotfiles` 中使用 `skm`，推荐把 `dotfiles` 视为安装与集成层，而不是 skill 内容本体。
 
 ## 仓库结构
 

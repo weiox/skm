@@ -1,6 +1,6 @@
 ---
 name: skm-doctor-agent-skills
-description: Use when agent skill entrypoints for Codex and Claude Code may be broken, duplicated, unmanaged, or drifting away from `~/.dotfiles/.config/agent-hub/skills`, and you want a structured diagnosis before fixing anything.
+description: Use when agent skill entrypoints for Codex and Claude Code may be broken, duplicated, unmanaged, or drifting away from `~/.skm`, and you want a structured diagnosis before fixing anything.
 ---
 
 # Doctor Agent Skills
@@ -14,7 +14,7 @@ This skill diagnoses the two entrypoint layers:
 - `~/.agents/skills`
 - `~/.claude/skills`
 
-and checks whether they are still aligned with the managed source tree under `~/.dotfiles/.config/agent-hub/skills`.
+and checks whether they are still aligned with the managed source tree under `~/.skm`.
 
 ## When to Use
 
@@ -34,29 +34,29 @@ Diagnose first, then fix.
 Run the doctor script before making cleanup changes:
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-doctor-agent-skills/scripts/skm-doctor-agent-skills.sh
+bash ~/.skm/skills/skm-doctor-agent-skills/scripts/skm-doctor-agent-skills.sh
 ```
 
 ## What It Reports
 
 The script classifies each entrypoint symlink as:
 
-- `OK` — managed and resolves inside `agent-hub`
+- `OK` — managed and resolves inside `skm`
 - `BROKEN` — symlink exists but target does not
-- `UNMANAGED` — symlink points outside the managed `agent-hub` tree
+- `UNMANAGED` — symlink points outside the managed `skm` tree
 
 ## Workflow
 
 ### 1. Run the doctor
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-doctor-agent-skills/scripts/skm-doctor-agent-skills.sh
+bash ~/.skm/skills/skm-doctor-agent-skills/scripts/skm-doctor-agent-skills.sh
 ```
 
 ### 2. Read the categories
 
 - If you see `BROKEN`, rebuild or remove stale entrypoints
-- If you see `UNMANAGED`, decide whether the entry should move into `agent-hub`
+- If you see `UNMANAGED`, decide whether the entry should move into `skm`
 - If everything is `OK`, the entrypoint layer is at least structurally healthy
 
 ### 3. Apply the next skill

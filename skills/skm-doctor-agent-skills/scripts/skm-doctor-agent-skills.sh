@@ -3,7 +3,7 @@
 set -euo pipefail
 
 HOME_DIR="${HOME:?HOME is required}"
-AGENT_HUB_ROOT="${AGENT_HUB_ROOT:-$HOME_DIR/.dotfiles/.config/agent-hub}"
+SKM_DIR="${SKM_DIR:-$HOME_DIR/.skm}"
 CLAUDE_SKILLS_DIR="${CLAUDE_SKILLS_DIR:-$HOME_DIR/.claude/skills}"
 CODEX_SKILLS_DIR="${CODEX_SKILLS_DIR:-$HOME_DIR/.agents/skills}"
 
@@ -29,7 +29,7 @@ inspect_dir() {
     fi
 
     case "$target" in
-      "$AGENT_HUB_ROOT"/*)
+      "$SKM_DIR"/*)
         printf 'OK %s %s -> %s\n' "$label" "$name" "$target"
         ;;
       *)

@@ -1,13 +1,13 @@
 ---
 name: skm-update-vendor-skills
-description: Use when vendor skill packages under `~/.dotfiles/.config/agent-hub/skills/vendor` may have upstream updates and you want to refresh one package or all packages, then rebuild and verify the Codex and Claude Code entrypoints.
+description: Use when vendor skill packages under `~/.skm/vendor` may have upstream updates and you want to refresh one package or all packages, then rebuild and verify the Codex and Claude Code entrypoints.
 ---
 
 # Update Vendor Skills
 
 ## Overview
 
-Vendor skill packages drift over time. This skill updates those packages without losing the local `agent-hub` entrypoint model.
+Vendor skill packages drift over time. This skill updates those packages without losing the local `skm` entrypoint model.
 
 After updating a vendor package, it immediately rebuilds the entrypoints and verifies the result.
 
@@ -32,7 +32,7 @@ After every vendor update:
 Run the bundled script:
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-update-vendor-skills/scripts/skm-update-vendor-skills.sh [package-name...]
+bash ~/.skm/skills/skm-update-vendor-skills/scripts/skm-update-vendor-skills.sh [package-name...]
 ```
 
 ## Workflow
@@ -48,11 +48,11 @@ bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-update-vendor-sk
 Examples:
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-update-vendor-skills/scripts/skm-update-vendor-skills.sh
+bash ~/.skm/skills/skm-update-vendor-skills/scripts/skm-update-vendor-skills.sh
 
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-update-vendor-skills/scripts/skm-update-vendor-skills.sh superpowers
+bash ~/.skm/skills/skm-update-vendor-skills/scripts/skm-update-vendor-skills.sh superpowers
 
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-update-vendor-skills/scripts/skm-update-vendor-skills.sh superpowers skm
+bash ~/.skm/skills/skm-update-vendor-skills/scripts/skm-update-vendor-skills.sh superpowers skm
 ```
 
 ### 3. Read the result

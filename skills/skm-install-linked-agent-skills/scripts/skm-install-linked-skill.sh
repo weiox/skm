@@ -4,9 +4,8 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILL_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-AGENT_HUB_ROOT="$(cd "$SKILL_DIR/../../../../.." && pwd)"
-DOTFILES_ROOT="$(cd "$AGENT_HUB_ROOT/../.." && pwd)"
-VENDOR_ROOT="$AGENT_HUB_ROOT/skills/vendor"
+SKM_DIR="${SKM_DIR:-$(cd "$SKILL_DIR/../.." && pwd)}"
+VENDOR_ROOT="$SKM_DIR/vendor"
 
 usage() {
   cat <<'EOF'
@@ -127,7 +126,7 @@ has_skill_content() {
 }
 
 ensure_git_repo() {
-  git -C "$DOTFILES_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1 || fail "$DOTFILES_ROOT is not a git repository"
+  git -C "$SKM_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1 || fail "$SKM_DIR is not a git repository"
 }
 
 main() {
@@ -152,8 +151,8 @@ main() {
   ensure_git_repo
   mkdir -p "$VENDOR_ROOT"
 
-  local relative_submodule=".config/agent-hub/skills/vendor/$package_name"
-  local target_dir="$DOTFILES_ROOT/$relative_submodule"
+  local relative_submodule="vendor/$package_name"
+  local target_dir="$SKM_DIR/$relative_submodule"
   local status="installed"
 
   if [[ -e "$target_dir" ]]; then
@@ -163,22 +162,20 @@ main() {
       fail "target path exists and is not a git repo: $target_dir"
     fi
   else
-    git -C "$DOTFILES_ROOT" -c protocol.file.allow=always submodule add --quiet "$repo_url" "$relative_submodule" >/dev/null
+    git -C "$SKM_DIR" -c protocol.file.allow=always submodule add --quiet "$repo_url" "$relative_submodule" >/dev/null
   fi
 
-  git -C "$DOTFILES_ROOT" -c protocol.file.allow=always submodule update --init --recursive --quiet "$relative_submodule" >/dev/null
+  git -C "$SKM_DIR" -c protocol.file.allow=always submodule update --init --recursive --quiet "$relative_submodule" >/dev/null
 
   has_skill_content "$target_dir" || fail "imported package has no discoverable skills: $target_dir"
 
-  bash "$AGENT_HUB_ROOT/scripts/bootstrap.sh" --force >/dev/null
-  bash "$AGENT_HUB_ROOT/scripts/check.sh" >/dev/null
+  bash "$SKM_DIR/scripts/bootstrap.sh" --force >/dev/null
+  bash "$SKM_DIR/scripts/check.sh" >/dev/null
 
   log "STATUS: $status"
   log "PACKAGE: $package_name"
   log "TARGET: $target_dir"
-  if [[ -d "$target_dir/skills" ]]; then
-    log "CODEX_ENTRY: $HOME/.agents/skills/$package_name -> $target_dir/skills"
-  fi
+  log "SHARED_EXPORT: $HOME/.skm/exports/shared"
 }
 
 main "$@"

@@ -56,10 +56,9 @@
 
 当前短板：
 
-- 仓库级 README 仍偏简略
-- 安装脚本仍偏向 `agent-hub` 目录结构
-- 与 `agent-hub` 的职责边界需要进一步清晰
-- 测试还主要依赖上层 `agent-hub`
+- `~/.skm` 独立运行与 dotfiles 集成的职责边界还可以继续明确
+- 仓库内自带测试仍未整理完成
+- 还缺少统一的发布前验证入口
 
 ---
 
@@ -72,7 +71,7 @@
 ### P0-1. 固化仓库定位
 
 - 在 README 中明确 `skm` 是 skills lifecycle toolkit
-- 明确它与 `agent-hub` 的关系
+- 明确它与 `skm` 的关系
 - 明确仓库的 in-scope / out-of-scope
 
 ### P0-2. 统一 skill 模板
@@ -89,8 +88,7 @@
 
 把脚本里的关键路径逐步参数化：
 
-- `AGENT_HUB_ROOT`
-- `DOTFILES_ROOT`
+- `SKM_DIR`
 - `CLAUDE_SKILLS_DIR`
 - `CODEX_SKILLS_DIR`
 
@@ -134,7 +132,7 @@
 
 职责：
 
-- 对齐 `agent-hub` 与两边入口目录
+- 对齐 `skm` 与两边入口目录
 - 清理旧链接
 - 保证当前运行态与声明态一致
 

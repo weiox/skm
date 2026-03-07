@@ -32,7 +32,7 @@ Before release:
 Run:
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-release-agent-skill-pack/scripts/skm-release-agent-skill-pack.sh <repo-path>
+bash ~/.skm/skills/skm-release-agent-skill-pack/scripts/skm-release-agent-skill-pack.sh <repo-path>
 ```
 
 ## Workflow
@@ -40,7 +40,7 @@ bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-release-agent-sk
 ### 1. Point it at the target repository
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-release-agent-skill-pack/scripts/skm-release-agent-skill-pack.sh \
+bash ~/.skm/skills/skm-release-agent-skill-pack/scripts/skm-release-agent-skill-pack.sh \
   /path/to/skill-pack
 ```
 

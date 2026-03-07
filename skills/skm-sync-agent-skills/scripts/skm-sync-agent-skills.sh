@@ -4,15 +4,14 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILL_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-AGENT_HUB_ROOT="${AGENT_HUB_ROOT:-$(cd "$SKILL_DIR/../../../../.." && pwd)}"
 HOME_DIR="${HOME:?HOME is required}"
-SKM_DIR="${SKM_DIR:-$HOME_DIR/.skm}"
+SKM_DIR="${SKM_DIR:-$(cd "$SKILL_DIR/../.." && pwd)}"
 SKM_EXPORTS_DIR="${SKM_EXPORTS_DIR:-$SKM_DIR/exports}"
 SKM_SHARED_EXPORT_DIR="${SKM_SHARED_EXPORT_DIR:-$SKM_EXPORTS_DIR/shared}"
 CLAUDE_SKILLS_DIR="${CLAUDE_SKILLS_DIR:-$HOME_DIR/.claude/skills}"
 CODEX_SKILLS_DIR="${CODEX_SKILLS_DIR:-$HOME_DIR/.agents/skills}"
-BOOTSTRAP_SCRIPT="$AGENT_HUB_ROOT/scripts/bootstrap.sh"
-CHECK_SCRIPT="$AGENT_HUB_ROOT/scripts/check.sh"
+BOOTSTRAP_SCRIPT="$SKM_DIR/scripts/bootstrap.sh"
+CHECK_SCRIPT="$SKM_DIR/scripts/check.sh"
 
 new_file() {
   mktemp
@@ -59,10 +58,11 @@ record_root_skill_names() {
 }
 
 record_expected_names() {
-  local personal_root="$AGENT_HUB_ROOT/skills/personal"
-  local vendor_root="$AGENT_HUB_ROOT/skills/vendor"
+  local personal_root="$SKM_DIR/personal"
+  local vendor_root="$SKM_DIR/vendor"
   local shared_file="$1"
 
+  record_root_skill_names "$SKM_DIR/skills" "$shared_file"
   record_root_skill_names "$personal_root" "$shared_file"
 
   while read -r package_dir; do

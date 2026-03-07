@@ -4,12 +4,10 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILL_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-AGENT_HUB_ROOT="${AGENT_HUB_ROOT:-$(cd "$SKILL_DIR/../../../../.." && pwd)}"
-DOTFILES_ROOT="${DOTFILES_ROOT:-$(cd "$AGENT_HUB_ROOT/../.." && pwd)}"
-VENDOR_ROOT="$AGENT_HUB_ROOT/skills/vendor"
-BOOTSTRAP_SCRIPT="$AGENT_HUB_ROOT/scripts/bootstrap.sh"
-CHECK_SCRIPT="$AGENT_HUB_ROOT/scripts/check.sh"
-SELF_PACKAGE="skm"
+SKM_DIR="${SKM_DIR:-$(cd "$SKILL_DIR/../.." && pwd)}"
+VENDOR_ROOT="$SKM_DIR/vendor"
+BOOTSTRAP_SCRIPT="$SKM_DIR/scripts/bootstrap.sh"
+CHECK_SCRIPT="$SKM_DIR/scripts/check.sh"
 
 usage() {
   cat <<'EOF'
@@ -33,7 +31,7 @@ fail() {
 
 is_submodule_path() {
   local relative_path="$1"
-  git -C "$DOTFILES_ROOT" config -f .gitmodules --get-regexp '^submodule\..*\.path$' 2>/dev/null \
+  git -C "$SKM_DIR" config -f .gitmodules --get-regexp '^submodule\..*\.path$' 2>/dev/null \
     | awk '{print $2}' | grep -Fxq -- "$relative_path"
 }
 
@@ -43,7 +41,7 @@ update_package() {
   [[ -d "$package_dir" ]] || fail "vendor package not found: $package_name"
 
   local before after relative_path
-  relative_path=".config/agent-hub/skills/vendor/$package_name"
+  relative_path="vendor/$package_name"
 
   if [[ ! -d "$package_dir/.git" && ! -f "$package_dir/.git" ]]; then
     log "SKIP $package_name (not a git package)"
@@ -53,7 +51,7 @@ update_package() {
   before="$(git -C "$package_dir" rev-parse HEAD)"
 
   if is_submodule_path "$relative_path"; then
-    git -C "$DOTFILES_ROOT" -c protocol.file.allow=always submodule update --remote --init --recursive -- "$relative_path" >/dev/null
+    git -C "$SKM_DIR" -c protocol.file.allow=always submodule update --remote --init --recursive -- "$relative_path" >/dev/null
   else
     git -C "$package_dir" pull --ff-only >/dev/null
   fi
@@ -76,10 +74,6 @@ collect_packages() {
   find "$VENDOR_ROOT" -mindepth 1 -maxdepth 1 -type d | sort | while read -r package_dir; do
     local package_name
     package_name="$(basename "$package_dir")"
-    if [[ "$package_name" == "$SELF_PACKAGE" ]]; then
-      log "SKIP $package_name (self-update requires explicit target)" >&2
-      continue
-    fi
     printf '%s\n' "$package_name"
   done
 }

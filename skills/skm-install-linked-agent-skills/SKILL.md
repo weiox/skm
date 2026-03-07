@@ -1,6 +1,6 @@
 ---
 name: skm-install-linked-agent-skills
-description: Use when a user pastes a GitHub repo URL, `skills.sh` link, `owner/repo@skill` reference, or local git path for an external skill package and wants it imported into `~/.dotfiles/.config/agent-hub/skills/vendor` with `Codex` and `Claude Code` entrypoints rebuilt automatically.
+description: Use when a user pastes a GitHub repo URL, `skills.sh` link, `owner/repo@skill` reference, or local git path for an external skill package and wants it imported into `~/.skm/vendor` with `Codex` and `Claude Code` entrypoints rebuilt automatically.
 ---
 
 # Install Linked Agent Skills
@@ -11,7 +11,7 @@ When a user gives you a link to an external skill package, do not leave it float
 
 Import the package into:
 
-- `~/.dotfiles/.config/agent-hub/skills/vendor/<package>`
+- `~/.skm/vendor/<package>`
 
 Then regenerate entrypoints:
 
@@ -37,7 +37,7 @@ Do not use this skill for:
 
 For external skill links:
 
-1. import into `~/.dotfiles/.config/agent-hub/skills/vendor/`
+1. import into `~/.skm/vendor/`
 2. keep the upstream package boundary intact
 3. rebuild entrypoints with `bootstrap.sh`
 4. verify with `check.sh`
@@ -47,19 +47,19 @@ For external skill links:
 Use the bundled installer script instead of hand-writing `git submodule` commands:
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-install-linked-agent-skills/scripts/skm-install-linked-skill.sh "<link>" [vendor-name]
+bash ~/.skm/skills/skm-install-linked-agent-skills/scripts/skm-install-linked-skill.sh "<link>" [vendor-name]
 ```
 
 Examples:
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-install-linked-agent-skills/scripts/skm-install-linked-skill.sh \
+bash ~/.skm/skills/skm-install-linked-agent-skills/scripts/skm-install-linked-skill.sh \
   "https://github.com/obra/superpowers"
 
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-install-linked-agent-skills/scripts/skm-install-linked-skill.sh \
+bash ~/.skm/skills/skm-install-linked-agent-skills/scripts/skm-install-linked-skill.sh \
   "https://skills.sh/vercel-labs/agent-skills/vercel-react-best-practices"
 
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-install-linked-agent-skills/scripts/skm-install-linked-skill.sh \
+bash ~/.skm/skills/skm-install-linked-agent-skills/scripts/skm-install-linked-skill.sh \
   "owner/repo@skill-name" custom-package-name
 ```
 
@@ -83,7 +83,7 @@ The script will:
 
 - derive the upstream repo URL
 - choose the vendor directory name
-- add the package under `~/.dotfiles/.config/agent-hub/skills/vendor/`
+- add the package under `~/.skm/vendor/`
 - run `bootstrap.sh --force`
 - run `check.sh`
 
@@ -97,7 +97,7 @@ After installation, report:
 
 ## Common Mistakes
 
-- cloning a linked skill somewhere outside `agent-hub`
+- cloning a linked skill somewhere outside `skm`
 - copying files manually instead of preserving an upstream package boundary
 - editing `~/.agents/skills` or `~/.claude/skills` directly
 - forgetting to rebuild entrypoints after import
@@ -107,7 +107,7 @@ After installation, report:
 
 Before calling the import done:
 
-1. the package exists under `~/.dotfiles/.config/agent-hub/skills/vendor/`
-2. `bash ~/.dotfiles/.config/agent-hub/scripts/bootstrap.sh --force` has run
-3. `bash ~/.dotfiles/.config/agent-hub/scripts/check.sh` passes
+1. the package exists under `~/.skm/vendor/`
+2. `bash ~/.skm/scripts/bootstrap.sh --force` has run
+3. `bash ~/.skm/scripts/check.sh` passes
 4. the resulting symlink destinations are reported back to the user

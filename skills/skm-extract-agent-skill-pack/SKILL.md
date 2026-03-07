@@ -40,15 +40,15 @@ The safe sequence is:
 ## Command
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-extract-agent-skill-pack/scripts/skm-extract-agent-skill-pack.sh \
+bash ~/.skm/skills/skm-extract-agent-skill-pack/scripts/skm-extract-agent-skill-pack.sh \
   <source-root> <target-repo> <skill-name...>
 ```
 
 Example:
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-extract-agent-skill-pack/scripts/skm-extract-agent-skill-pack.sh \
-  ~/.dotfiles/.config/agent-hub/skills/personal \
+bash ~/.skm/skills/skm-extract-agent-skill-pack/scripts/skm-extract-agent-skill-pack.sh \
+  ~/.skm/personal \
   ~/tmp/my-skill-pack \
   alpha-skill beta-skill
 ```

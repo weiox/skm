@@ -1,6 +1,6 @@
 ---
 name: skm-organize-agent-skills
-description: Use when local skills for Codex and Claude Code are scattered across `~/.agents/skills`, `~/.claude/skills`, `~/.codex/skills`, or ad-hoc folders and you want to consolidate them into a single source of truth under `~/.dotfiles/.config/agent-hub/skills` while keeping tool-specific symlink entrypoints.
+description: Use when local skills for Codex and Claude Code are scattered across `~/.agents/skills`, `~/.claude/skills`, `~/.codex/skills`, or ad-hoc folders and you want to consolidate them into a single source of truth under `~/.skm` while keeping tool-specific symlink entrypoints.
 ---
 
 # Organize Agent Skills
@@ -11,7 +11,7 @@ Keep one source of truth for local skills, and treat every tool-specific skill d
 
 The target model is:
 
-- Source of truth: `~/.dotfiles/.config/agent-hub/skills`
+- Source of truth: `~/.skm`
 - `Codex` entrypoint: `~/.agents/skills`
 - `Claude Code` entrypoint: `~/.claude/skills`
 
@@ -32,7 +32,7 @@ Do not use this skill for project-specific instructions like repository `AGENTS.
 Keep the repository layout minimal:
 
 ```text
-~/.dotfiles/.config/agent-hub/skills/
+~/.skm/
 ├── personal/
 │   └── shared/
 │       └── <skill-name>/SKILL.md
@@ -42,8 +42,8 @@ Keep the repository layout minimal:
 
 Apply these rules:
 
-- your own reusable skills go in `~/.dotfiles/.config/agent-hub/skills/personal/`
-- third-party skill packs go in `~/.dotfiles/.config/agent-hub/skills/vendor/`
+- your own reusable skills go in `~/.skm/personal/`
+- third-party skill packs go in `~/.skm/vendor/`
 - `~/.agents/skills` and `~/.claude/skills` should contain symlinks only
 - do not treat `~/.codex/skills/.system` or runtime caches as part of your personal library
 
@@ -56,7 +56,7 @@ Check the active skill sources before moving anything:
 ```bash
 find ~/.agents/skills -maxdepth 2 | sort
 find ~/.claude/skills -maxdepth 2 | sort
-find ~/.dotfiles/.config/agent-hub/skills -maxdepth 4 | sort
+find ~/.skm -maxdepth 4 | sort
 ```
 
 Then classify each item into exactly one bucket:
@@ -70,19 +70,19 @@ Then classify each item into exactly one bucket:
 For each personal skill:
 
 1. Choose one canonical name
-2. Move the real `SKILL.md` under `~/.dotfiles/.config/agent-hub/skills/personal/<skill-name>/`
-3. Remove duplicate source copies outside `agent-hub`
+2. Move the real `SKILL.md` under `~/.skm/personal/<skill-name>/`
+3. Remove duplicate source copies outside `skm`
 4. Rebuild entrypoint symlinks with:
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/scripts/bootstrap.sh --force
+bash ~/.skm/scripts/bootstrap.sh --force
 ```
 
 ### 3. Consolidate vendor skills
 
 For third-party skill packs:
 
-- prefer `git submodule` under `~/.dotfiles/.config/agent-hub/skills/vendor/`
+- prefer `git submodule` under `~/.skm/vendor/`
 - keep the upstream package intact instead of copying individual files by hand
 - let `bootstrap.sh` expose vendor skills to the agent entrypoints
 
@@ -90,7 +90,7 @@ Example:
 
 ```bash
 git -C ~/.dotfiles submodule add https://github.com/obra/superpowers.git \
-  .config/agent-hub/skills/vendor/superpowers
+  ~/.skm/vendor/superpowers
 ```
 
 ### 4. Verify the entrypoints
@@ -98,7 +98,7 @@ git -C ~/.dotfiles submodule add https://github.com/obra/superpowers.git \
 After any move, confirm the generated entrypoints:
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/scripts/check.sh
+bash ~/.skm/scripts/check.sh
 ```
 
 Also spot-check the symlinks:
@@ -116,7 +116,7 @@ Use this table when classifying a skill:
 | --- | --- |
 | You wrote it and will maintain it | `skills/personal/` |
 | It comes from an upstream package | `skills/vendor/<package>/` |
-| It is tool-generated or runtime-only | Do not store in `agent-hub` |
+| It is tool-generated or runtime-only | Do not store in `skm` |
 | It is repo-specific guidance | Keep it in the repo, not here |
 
 ## Common Mistakes
@@ -131,8 +131,8 @@ Use this table when classifying a skill:
 
 Before calling the reorganization done:
 
-1. every maintained skill lives under `~/.dotfiles/.config/agent-hub/skills`
+1. every maintained skill lives under `~/.skm`
 2. personal skills exist only under `skills/personal/`
 3. vendor packs exist only under `skills/vendor/`
 4. `~/.agents/skills` and `~/.claude/skills` are regenerated symlink entrypoints
-5. `bash ~/.dotfiles/.config/agent-hub/scripts/check.sh` passes
+5. `bash ~/.skm/scripts/check.sh` passes
