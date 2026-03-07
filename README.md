@@ -61,6 +61,27 @@ The outcome should be a practical summary of:
 - what still needs your confirmation
 - whether you should organize, install, sync, or update next
 
+## What Pain Points skm Solves
+
+Most people do not realize they need `skm` when they first install a skill. They realize it later, when the setup starts drifting and nobody remembers what is actually being managed.
+
+`skm` is designed to solve these recurring pain points:
+
+- **“I found a skill pack, but I don't know where it should live.”**
+  A common mistake is cloning or copying a skill straight into `~/.agents/skills` or `~/.claude/skills`. It may appear to work at first, but later it becomes hard to update, track, or migrate. `skm` fixes this by keeping external packs in `vendor/` and rebuilding entrypoints from a managed source tree.
+
+- **“My local skills are scattered everywhere.”**
+  Over time, skills end up spread across tool-owned directories, personal folders, old machines, and one-off experiments. At that point, it becomes unclear which copy is the real source of truth. `skm` gives you one declared home under `~/.skm` and treats agent-visible directories as generated entrypoints instead of editable source directories.
+
+- **“Codex can see a skill, but Claude Code cannot.”**
+  This usually means the entrypoint layers have drifted, old symlinks are still hanging around, or unmanaged links were added by hand. `skm` gives you a diagnosis-first workflow so you can inspect what is `OK`, `BROKEN`, or `UNMANAGED` before rebuilding the runtime view.
+
+- **“I want to update vendor skills, but I do not trust manual edits.”**
+  Pulling changes directly in the wrong place or editing symlink layers by hand is risky and hard to repeat. `skm` makes vendor updates a managed flow: update the package, rebuild entrypoints, then verify the result.
+
+- **“I wrote useful local skills, but I have no clean path to share or release them.”**
+  Many personal skills start as local experiments and later become reusable. Without a structure, extracting them into a standalone pack is messy. `skm` gives you a path from local skills to extractable, releasable packages without losing the local source-of-truth model.
+
 ## If You Already Have Many Skills
 
 This is one of the most common reasons to use `skm`: you already have local skills, but they may be scattered across places like:
