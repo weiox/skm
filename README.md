@@ -2,20 +2,29 @@
 
 # skm
 
-**Agent Skill Manager** — a repository for managing, diagnosing, organizing, syncing, and upgrading skills used by `Codex` and `Claude Code`.
+**Agent Skill Manager** — keep `Codex` and `Claude Code` skills in one managed source tree, so they stay inspectable, repairable, and easy to evolve.
 
 `skm` is not an app-runtime replacement, and it is not a domain-specific coding skill pack.
 Its job is more foundational: it keeps your local agent-skill setup understandable, repairable, and maintainable over time.
 
 If you already use `Codex` or `Claude Code` and want `~/.skm` to be the source of truth for your local skills, this repository is for you.
 
-## What This README Assumes
+## Who This Is For
 
-This README assumes:
+`skm` is a good fit if:
 
 - you already have `Codex` or `Claude Code` installed
 - you want `~/.skm` to be the source of truth for local agent skills
-- you want the agent to help inspect, initialize, organize, and sync your setup
+- you want agent-guided diagnosis, initialization, organization, sync, and updates
+
+## Who This Is Not For
+
+`skm` is probably not what you need if:
+
+- you are looking for a replacement for the agent runtime itself
+- you want project-local instructions such as `AGENTS.md` or `CLAUDE.md`
+- you want domain-specific coding skills rather than skill-library management
+- you have not installed `Codex` or `Claude Code` yet
 
 If you do not have an agent installed yet, install `Codex` or `Claude Code` first, then come back to `skm`.
 

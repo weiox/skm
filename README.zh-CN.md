@@ -2,20 +2,29 @@
 
 # skm
 
-**Agent Skill Manager** —— 用来管理、诊断、整理、同步和升级 `Codex` / `Claude Code` 的 skills。
+**Agent Skill Manager** —— 把 `Codex` 和 `Claude Code` 的 skills 收敛到一个可管理的 source tree 中，让它们更容易检查、修复、同步和长期维护。
 
 `skm` 不是业务开发 skill 包，也不是 agent 运行时。  
 它解决的是另一类更基础的问题：你的本机 agent skills 应该放在哪里、怎么保持干净、怎么安全导入外部 skill、怎么修复坏掉的入口层、以及怎么长期维护这一整套本地 skills 体系。
 
 如果你已经在使用 `Codex` 或 `Claude Code`，并且希望把 `~/.skm` 作为本机 skills 的 source of truth，`skm` 就是为你准备的。
 
-## 这份 README 假设什么
+## 适合谁
 
-这份 README 默认你是下面这种读者：
+如果你符合下面这些情况，`skm` 会比较适合你：
 
 - 你已经安装了 `Codex` 或 `Claude Code`
 - 你想把 `~/.skm` 作为本机 agent skills 的唯一 source of truth
-- 你希望 agent 直接帮你做检查、初始化、整理和同步
+- 你希望 agent 帮你做诊断、初始化、整理、同步和更新
+
+## 不适合谁
+
+如果你要解决的是下面这些问题，`skm` 可能不是你要找的东西：
+
+- 你想找的是 agent 运行时本身的替代品
+- 你想管理的是项目级 `AGENTS.md` / `CLAUDE.md`
+- 你需要的是某个业务领域的编码 skill，而不是 skill 库管理工具
+- 你还没有安装 `Codex` 或 `Claude Code`
 
 如果你还没有安装 agent，请先安装 `Codex` 或 `Claude Code`，再回来使用 `skm`。
 
