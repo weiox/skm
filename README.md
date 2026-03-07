@@ -1,223 +1,202 @@
+**English** | [中文](README.zh-CN.md)
+
 # skm
 
-**Agent Skill Manager** — discover, install, link, and upgrade skills for Claude Code & Codex.
+**Agent Skill Manager** — a repository for managing, diagnosing, organizing, syncing, and upgrading skills used by `Codex` and `Claude Code`.
 
-`skm` 不是教你“某个领域怎么写代码”的 skill 包。  
-它专门解决另一类更基础、也更容易变乱的问题：
+`skm` is not an app-runtime replacement, and it is not a domain-specific coding skill pack.
+Its job is more foundational: it keeps your local agent-skill setup understandable, repairable, and maintainable over time.
 
-- 看到一个 skill 仓库，不知道该装到哪里
-- 本地 skill 散落在 `~/.agents/skills`、`~/.claude/skills`、个人目录里
-- `Claude Code` 能识别，`Codex` 却不识别，或者反过来
-- vendor skill 包已经落后，但不知道如何安全更新
-- 本地写出来的一组 skill 想拆成独立仓库，却没有标准流程
+If you already use `Codex` or `Claude Code` and want `~/.skm` to be the source of truth for your local skills, this repository is for you.
 
-如果你已经遇到过上面这些情况，那 `skm` 就是为你准备的。
+## What This README Assumes
 
-## 用户痛点
+This README assumes:
 
-### 痛点 1：外部 skill 很容易“装上就乱”
+- you already have `Codex` or `Claude Code` installed
+- you want `~/.skm` to be the source of truth for local agent skills
+- you want the agent to help inspect, initialize, organize, and sync your setup
 
-典型场景：
+If you do not have an agent installed yet, install `Codex` or `Claude Code` first, then come back to `skm`.
 
-- 你在 GitHub 或 `skills.sh` 上看到一个 skill
-- 第一反应是直接 clone 到 `~/.claude/skills/` 或 `~/.agents/skills/`
-- 一开始能用，但过一阵子就忘了它到底从哪里来的、怎么更新、怎么迁移到新电脑
+## Get Started in 3 Minutes
 
-`skm` 的做法是：
+Recommended flow:
 
-- 外部 skill 包统一进入 `vendor/`
-- `Codex` 和 `Claude Code` 的入口层只放生成出来的 symlink
-- 源码、入口、升级路径三者分离
+1. Put this repository at `~/.skm`
+2. Make sure your agent can read local skills on your machine
+3. Paste the following universal prompt into `Codex` or `Claude Code`
 
-### 痛点 2：本地 skill 会越来越散
+### Universal Prompt for Codex and Claude Code
 
-典型场景：
+```text
+Please treat ~/.skm as the single source of truth for my local agent skills and help me run an initialization check.
 
-- 你自己写了几个 skill
-- 一部分放在 `personal/`
-- 一部分放在旧目录
-- 一部分已经被复制进 agent 的入口目录里
-- 过一段时间之后，你已经说不清哪个才是真正的 source of truth
+Requirements:
+1. Start with skm-doctor-agent-skills to inspect ~/.agents/skills and ~/.claude/skills, and classify entries as OK, BROKEN, or UNMANAGED.
+2. If skills are scattered, duplicated, or the directory responsibilities are unclear, use skm-organize-agent-skills to explain how the layout should be cleaned up.
+3. If ~/.skm itself looks trustworthy, continue with skm-sync-agent-skills to rebuild and sync the Codex and Claude Code entrypoint layers.
+4. If external skill packages are missing, tell me whether I should use skm-install-linked-agent-skills.
+5. If vendor packages look stale, tell me whether I should use skm-update-vendor-skills.
+6. When finished, summarize in English: current health, what you inspected or repaired, what still needs my confirmation, and the recommended next step.
 
-`skm` 的做法是：
+Before doing anything that deletes, replaces, or overwrites existing entrypoint links, tell me first.
+```
 
-- 明确 `skm/skills`、`skm/personal`、`skm/vendor` 共同组成技能源目录
-- 用 `organize` 和 `sync` 把运行态重新拉回声明态
+## What This Prompt Triggers
 
-### 痛点 3：入口层经常坏，但很难查
+In a healthy flow, the agent will usually work in this order:
 
-典型场景：
+1. run `skm-doctor-agent-skills` to inspect the current entrypoint layers
+2. use `skm-organize-agent-skills` if the layout itself is messy
+3. use `skm-sync-agent-skills` if `~/.skm` is already a trustworthy declared state
+4. recommend `skm-install-linked-agent-skills` if a vendor package is missing
+5. recommend `skm-update-vendor-skills` if installed vendor packages are stale
 
-- 某个 skill 昨天还能用，今天突然没了
-- `~/.agents/skills` 里有一堆旧链接
-- 你不知道到底是 broken link、unmanaged link，还是路径已经改过
+The outcome should be a practical summary of:
 
-`skm` 的做法是：
+- whether the current setup is healthy
+- which links are `OK`, `BROKEN`, or `UNMANAGED`
+- what the agent actually repaired
+- what still needs your confirmation
+- whether you should organize, install, sync, or update next
 
-- 先用 `skm-doctor-agent-skills` 做结构诊断
-- 再用 `skm-sync-agent-skills` 清理和重建
+## If You Already Have Many Skills
 
-### 痛点 4：自己写的 skill 想发布，但没有标准动作
+This is one of the most common reasons to use `skm`: you already have local skills, but they may be scattered across places like:
 
-典型场景：
+- `~/.agents/skills`
+- `~/.claude/skills`
+- `~/.codex/skills`
+- old directories, temporary folders, or personal scratch paths
 
-- 你在本地写了一组 skill
-- 想把它们独立成一个 GitHub 仓库
-- 但不知道应该先抽出来、先发版、还是先接回 vendor
+Do not start by cleaning them manually. A better workflow is:
 
-`skm` 的做法是：
+1. diagnose the current state first
+2. separate what belongs in `personal`
+3. separate what belongs in `vendor`
+4. decide whether the entrypoint layers should then be synced
 
-- 先 `extract`
-- 再 `release`
-- 最后再接回 `vendor`
+You can say this to your agent:
 
-## skm 的职责
+```text
+Please treat ~/.skm as the only source of truth. First inspect ~/.agents/skills, ~/.claude/skills, and ~/.skm; diagnose the current state before changing anything; then tell me which skills should live in personal, which should live in vendor, and which old entrypoints can be removed. After I confirm, help me sync the entrypoint layers.
+```
 
-`skm` 关心的是 **agent skills 生命周期**，主线是：
+## What skm Helps Solve
+
+`skm` manages the **agent-skill lifecycle**, especially this path:
 
 **discover -> install -> organize -> verify -> sync -> update -> release**
 
-## 运行时模型
+It is especially useful when:
 
-当前推荐的本地运行时模型是：
+- you found an external skill repository and do not know where it should live
+- your local skills are scattered across several entrypoint directories
+- `Claude Code` sees a skill but `Codex` does not, or the reverse
+- vendor skill packs are outdated and you want a safe update path
+- you wrote local skills and want to extract or publish them as a separate pack
 
-- skills 的真实来源由 `skm` 维护
-- `skm` 负责 skill 生命周期能力
-- `~/.skm/exports/shared` 作为统一导出层
-- `~/.claude/skills` 和 `~/.agents/skills` 指向这个共享导出层
+## Common Workflows
 
-这样做的目的，是把：
+### 1. I want to inspect and initialize my current setup
 
-- 源内容
-- 导出视图
-- 官方入口目录
-
-三者分开，减少入口层漂移和重复链接问题。
-
-它不负责：
-
-- 项目级 `AGENTS.md` / `CLAUDE.md`
-- 某个业务领域的编码 skill
-- 聊天历史、缓存、工具内部状态
-
-## 典型使用场景
-
-### 场景 1：我刚看到一个新 skill 链接，想安全纳入本地体系
-
-你可以这样做：
-
-1. 用 `skm-find-skills` 先确认是否合适
-2. 用 `skm-install-linked-agent-skills` 导入到 `vendor/`
-3. 自动重建 `Codex` / `Claude Code` 的入口层
-
-示例：
-
-```bash
-bash ~/.skm/skills/skm-install-linked-agent-skills/scripts/skm-install-linked-skill.sh \
-  "https://github.com/owner/repo"
-```
-
-适合的 skill：
-
-- `skm-find-skills`
-- `skm-install-linked-agent-skills`
-
-### 场景 2：我的 skill 目录已经很乱，想重新收敛
-
-你可以这样做：
-
-1. 用 `skm-doctor-agent-skills` 看当前有哪些坏链和非托管链接
-2. 用 `skm-organize-agent-skills` 明确应该如何收敛
-3. 用 `skm-sync-agent-skills` 把运行态重建到正确状态
-
-示例：
-
-```bash
-bash ~/.skm/skills/skm-doctor-agent-skills/scripts/skm-doctor-agent-skills.sh
-
-bash ~/.skm/skills/skm-sync-agent-skills/scripts/skm-sync-agent-skills.sh
-```
-
-适合的 skill：
+Use:
 
 - `skm-doctor-agent-skills`
 - `skm-organize-agent-skills`
 - `skm-sync-agent-skills`
 
-### 场景 3：vendor 里的 skill 包已经落后了
+This is the best starting point when your machine already has skill-related state but you do not fully trust it yet.
 
-你可以这样做：
+### 2. I found an external skill link and want to import it safely
 
-1. 用 `skm-update-vendor-skills` 更新单个包或全部包
-2. 更新后自动跑 `bootstrap.sh --force`
-3. 再自动跑 `check.sh`
+Use:
 
-示例：
+- `skm-find-skills`
+- `skm-install-linked-agent-skills`
 
-```bash
-bash ~/.skm/skills/skm-update-vendor-skills/scripts/skm-update-vendor-skills.sh
+The principle is simple: external skill packs belong in `vendor/`, not directly inside `~/.agents/skills` or `~/.claude/skills`.
 
-bash ~/.skm/skills/skm-update-vendor-skills/scripts/skm-update-vendor-skills.sh superpowers
-```
+### 3. My skill directories are a mess and I want one source of truth
 
-适合的 skill：
+Use:
+
+- `skm-doctor-agent-skills`
+- `skm-organize-agent-skills`
+- `skm-sync-agent-skills`
+
+The principle is: diagnose first, organize second, sync last.
+
+### 4. My vendor packages are outdated
+
+Use:
 
 - `skm-update-vendor-skills`
 
-### 场景 4：我本地写了一组 skill，想拆成独立仓库
+This flow updates the selected vendor packages, rebuilds entrypoints, and verifies the result.
 
-你可以这样做：
+### 5. I wrote a local skill pack and want to split or release it
 
-1. 用 `skm-extract-agent-skill-pack` 先生成一个独立仓库骨架
-2. 用 `skm-release-agent-skill-pack` 做发布前检查并生成 checklist
-3. 后续再接回 `vendor/`
-
-示例：
-
-```bash
-bash ~/.skm/skills/skm-extract-agent-skill-pack/scripts/skm-extract-agent-skill-pack.sh \
-  ~/.skm/personal \
-  ~/tmp/my-skill-pack \
-  alpha-skill beta-skill
-
-bash ~/.skm/skills/skm-release-agent-skill-pack/scripts/skm-release-agent-skill-pack.sh \
-  ~/tmp/my-skill-pack
-```
-
-适合的 skill：
+Use:
 
 - `skm-extract-agent-skill-pack`
 - `skm-release-agent-skill-pack`
 
-## 当前包含的 skills
+The usual flow is: extract first, validate release readiness second, then decide whether it should come back through `vendor/`.
 
-- `skm-doctor-agent-skills`：检查入口层是否 broken / unmanaged
-- `skm-extract-agent-skill-pack`：把一组本地 skill 提取成独立仓库骨架
-- `skm-find-skills`：发现外部可安装 skill
-- `skm-install-linked-agent-skills`：把外部 skill 导入 `vendor/`
-- `skm-organize-agent-skills`：整理本地散乱 skill 的结构
-- `skm-release-agent-skill-pack`：发布前校验独立 skill 包
-- `skm-sync-agent-skills`：把运行态入口同步回声明态
-- `skm-update-vendor-skills`：更新 vendor skill 包并重建入口
+## Included Skills
 
-## 目录模型
+- `skm-doctor-agent-skills` — diagnose `Codex` and `Claude Code` entrypoints as `OK`, `BROKEN`, or `UNMANAGED`
+- `skm-extract-agent-skill-pack` — extract a set of local skills into a standalone repository skeleton
+- `skm-find-skills` — discover external installable skills
+- `skm-install-linked-agent-skills` — import an external skill pack into `vendor/`
+- `skm-organize-agent-skills` — consolidate scattered local skills into a clean source-of-truth layout
+- `skm-release-agent-skill-pack` — validate a standalone skill pack before release
+- `skm-sync-agent-skills` — rebuild runtime entrypoints from the declared `skm` layout
+- `skm-update-vendor-skills` — update vendor skill packs and rebuild entrypoints
 
-`skm` 现在同时承担两层职责：
+## Directory and Runtime Model
 
-- `skills/`：`skm` 自带的内建 skills
-- `personal/`：你自己的 personal skills
-- `vendor/`：外部 skill 包，例如 `superpowers`
-- `exports/shared/`：给 `Claude Code` 和 `Codex` 共用的导出视图
+The recommended runtime model is:
 
-其中有一个重要约定：
+- `~/.skm` keeps the real sources of your skills
+- `~/.skm/exports/shared` is the shared exported view
+- `~/.claude/skills` and `~/.agents/skills` point to that shared exported view
 
-- `personal/` 只用于当前机器上的本地私有 skills
-- `personal/` 不会提交到 GitHub
-- 如果某个 personal skill 未来要公开或跨机器共享，应该先抽成独立 skill 包，再接回 `vendor/`
+The goal is to separate:
 
-如果你在 `dotfiles` 中使用 `skm`，推荐把 `dotfiles` 视为安装与集成层，而不是 skill 内容本体。
+- source content
+- exported view
+- tool-owned entrypoint directories
 
-## 仓库结构
+That separation reduces drift, duplicate links, and hard-to-debug visibility problems.
+
+### Directory Responsibilities
+
+- `skills/` — built-in `skm` skills
+- `personal/` — your own local personal skills
+- `vendor/` — third-party skill packs such as `superpowers`
+- `exports/shared/` — the exported view shared by `Claude Code` and `Codex`
+
+### One Important Rule
+
+- `personal/` is for local private skills on the current machine
+- do not treat `~/.agents/skills` or `~/.claude/skills` as source directories
+- if a personal skill should become shareable or public, extract it into a real pack and reconnect it through `vendor/`
+
+If you keep `skm` inside your dotfiles, treat dotfiles as the installation layer, not as the true content model for reusable skills.
+
+## What skm Does Not Manage
+
+`skm` does not manage:
+
+- project-local instruction files such as `AGENTS.md` or `CLAUDE.md`
+- domain-specific coding skills for application work
+- chat history, runtime caches, or tool-internal state
+- installing the agent runtime itself
+
+## Repository Structure
 
 ```text
 skills/
@@ -231,6 +210,7 @@ skills/
 └── skm-update-vendor-skills/
 ```
 
-## 下一步
+## Next Step
 
-如果你想继续了解后续优化方向，见 `ROADMAP.md`。
+If you already have `Codex` or `Claude Code`, the best next step is to paste the universal prompt above into your agent.
+If you want to understand planned future improvements, see `ROADMAP.md`.
