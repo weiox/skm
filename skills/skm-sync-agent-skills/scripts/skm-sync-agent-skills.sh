@@ -6,6 +6,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILL_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 AGENT_HUB_ROOT="${AGENT_HUB_ROOT:-$(cd "$SKILL_DIR/../../../../.." && pwd)}"
 HOME_DIR="${HOME:?HOME is required}"
+SKM_DIR="${SKM_DIR:-$HOME_DIR/.skm}"
+SKM_EXPORTS_DIR="${SKM_EXPORTS_DIR:-$SKM_DIR/exports}"
+SKM_SHARED_EXPORT_DIR="${SKM_SHARED_EXPORT_DIR:-$SKM_EXPORTS_DIR/shared}"
 CLAUDE_SKILLS_DIR="${CLAUDE_SKILLS_DIR:-$HOME_DIR/.claude/skills}"
 CODEX_SKILLS_DIR="${CODEX_SKILLS_DIR:-$HOME_DIR/.agents/skills}"
 BOOTSTRAP_SCRIPT="$AGENT_HUB_ROOT/scripts/bootstrap.sh"
@@ -58,25 +61,15 @@ record_root_skill_names() {
 record_expected_names() {
   local personal_root="$AGENT_HUB_ROOT/skills/personal"
   local vendor_root="$AGENT_HUB_ROOT/skills/vendor"
-  local claude_file="$1"
-  local codex_file="$2"
+  local shared_file="$1"
 
-  record_root_skill_names "$personal_root" "$claude_file"
-  record_root_skill_names "$personal_root" "$codex_file"
+  record_root_skill_names "$personal_root" "$shared_file"
 
   while read -r package_dir; do
     [[ -n "$package_dir" ]] || continue
-    local package_name skill_root
-    package_name="$(basename "$package_dir")"
+    local skill_root
     skill_root="$(vendor_skill_root "$package_dir")"
-
-    if [[ "$skill_root" != "$package_dir" ]]; then
-      remember "$codex_file" "$package_name"
-    else
-      record_root_skill_names "$skill_root" "$codex_file"
-    fi
-
-    record_root_skill_names "$skill_root" "$claude_file"
+    record_root_skill_names "$skill_root" "$shared_file"
   done < <(iter_vendor_packages "$vendor_root")
 }
 
@@ -124,31 +117,24 @@ print_added_removed() {
 }
 
 main() {
-  local expected_claude expected_codex before_claude before_codex after_claude after_codex
-  expected_claude="$(new_file)"
-  expected_codex="$(new_file)"
-  before_claude="$(new_file)"
-  before_codex="$(new_file)"
-  after_claude="$(new_file)"
-  after_codex="$(new_file)"
+  local expected_shared before_shared after_shared
+  expected_shared="$(new_file)"
+  before_shared="$(new_file)"
+  after_shared="$(new_file)"
 
-  record_expected_names "$expected_claude" "$expected_codex"
-  snapshot_names "$CLAUDE_SKILLS_DIR" "$before_claude"
-  snapshot_names "$CODEX_SKILLS_DIR" "$before_codex"
-
-  prune_unexpected "$CLAUDE_SKILLS_DIR" "$expected_claude"
-  prune_unexpected "$CODEX_SKILLS_DIR" "$expected_codex"
+  record_expected_names "$expected_shared"
+  snapshot_names "$CODEX_SKILLS_DIR" "$before_shared"
+  snapshot_names "$CLAUDE_SKILLS_DIR" "$before_shared"
+  snapshot_names "$SKM_SHARED_EXPORT_DIR" "$before_shared"
 
   bash "$BOOTSTRAP_SCRIPT" --force >/dev/null
   bash "$CHECK_SCRIPT" >/dev/null
 
-  snapshot_names "$CLAUDE_SKILLS_DIR" "$after_claude"
-  snapshot_names "$CODEX_SKILLS_DIR" "$after_codex"
+  snapshot_names "$SKM_SHARED_EXPORT_DIR" "$after_shared"
 
-  print_added_removed "claude" "$before_claude" "$after_claude"
-  print_added_removed "codex" "$before_codex" "$after_codex"
+  print_added_removed "shared" "$before_shared" "$after_shared"
 
-  rm -f "$expected_claude" "$expected_codex" "$before_claude" "$before_codex" "$after_claude" "$after_codex"
+  rm -f "$expected_shared" "$before_shared" "$after_shared"
 }
 
 main "$@"

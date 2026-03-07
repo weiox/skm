@@ -77,6 +77,23 @@
 
 **discover -> install -> organize -> verify -> sync -> update -> release**
 
+## 运行时模型
+
+当前推荐的本地运行时模型是：
+
+- skills 的真实来源由 `agent-hub` 维护
+- `skm` 负责 skill 生命周期能力
+- `~/.skm/exports/shared` 作为统一导出层
+- `~/.claude/skills` 和 `~/.agents/skills` 指向这个共享导出层
+
+这样做的目的，是把：
+
+- 源内容
+- 导出视图
+- 官方入口目录
+
+三者分开，减少入口层漂移和重复链接问题。
+
 它不负责：
 
 - 项目级 `AGENTS.md` / `CLAUDE.md`
