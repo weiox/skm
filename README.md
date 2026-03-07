@@ -1,59 +1,199 @@
 # skm
 
-`skm` 是一组围绕 agent skills 生命周期的工作流技能包。
+**Agent Skill Manager** — discover, install, link, and upgrade skills for Claude Code & Codex.
 
-它解决的不是“某个领域怎么写代码”，而是：
+`skm` 不是教你“某个领域怎么写代码”的 skill 包。  
+它专门解决另一类更基础、也更容易变乱的问题：
 
-- 如何发现合适的 skill
-- 如何把外部 skill 包导入本地体系
-- 如何把散乱的 skill 收敛到单一来源
-- 如何让 `Codex` 和 `Claude Code` 的入口层保持一致
+- 看到一个 skill 仓库，不知道该装到哪里
+- 本地 skill 散落在 `~/.agents/skills`、`~/.claude/skills`、个人目录里
+- `Claude Code` 能识别，`Codex` 却不识别，或者反过来
+- vendor skill 包已经落后，但不知道如何安全更新
+- 本地写出来的一组 skill 想拆成独立仓库，却没有标准流程
 
-## 定位
+如果你已经遇到过上面这些情况，那 `skm` 就是为你准备的。
 
-把 `skm` 理解成：
+## 用户痛点
 
-- **skills about skills**
-- **agent skill lifecycle toolkit**
-- **agent-hub` 的技能初始化与维护能力包**
+### 痛点 1：外部 skill 很容易“装上就乱”
 
-它的职责聚焦在这条链路：
+典型场景：
+
+- 你在 GitHub 或 `skills.sh` 上看到一个 skill
+- 第一反应是直接 clone 到 `~/.claude/skills/` 或 `~/.agents/skills/`
+- 一开始能用，但过一阵子就忘了它到底从哪里来的、怎么更新、怎么迁移到新电脑
+
+`skm` 的做法是：
+
+- 外部 skill 包统一进入 `vendor/`
+- `Codex` 和 `Claude Code` 的入口层只放生成出来的 symlink
+- 源码、入口、升级路径三者分离
+
+### 痛点 2：本地 skill 会越来越散
+
+典型场景：
+
+- 你自己写了几个 skill
+- 一部分放在 `personal/`
+- 一部分放在旧目录
+- 一部分已经被复制进 agent 的入口目录里
+- 过一段时间之后，你已经说不清哪个才是真正的 source of truth
+
+`skm` 的做法是：
+
+- 明确 `agent-hub/skills` 才是技能源目录
+- 用 `organize` 和 `sync` 把运行态重新拉回声明态
+
+### 痛点 3：入口层经常坏，但很难查
+
+典型场景：
+
+- 某个 skill 昨天还能用，今天突然没了
+- `~/.agents/skills` 里有一堆旧链接
+- 你不知道到底是 broken link、unmanaged link，还是路径已经改过
+
+`skm` 的做法是：
+
+- 先用 `doctor-agent-skills` 做结构诊断
+- 再用 `sync-agent-skills` 清理和重建
+
+### 痛点 4：自己写的 skill 想发布，但没有标准动作
+
+典型场景：
+
+- 你在本地写了一组 skill
+- 想把它们独立成一个 GitHub 仓库
+- 但不知道应该先抽出来、先发版、还是先接回 vendor
+
+`skm` 的做法是：
+
+- 先 `extract`
+- 再 `release`
+- 最后再接回 `vendor`
+
+## skm 的职责
+
+`skm` 关心的是 **agent skills 生命周期**，主线是：
 
 **discover -> install -> organize -> verify -> sync -> update -> release**
 
-## 仓库边界
-
-这个仓库只放与 skill 本身管理有关的内容：
-
-- skill 发现
-- skill 导入
-- skill 归档与整理
-- skill 入口重建与校验
-- 后续的升级、诊断、发布能力
-
-这个仓库不负责：
+它不负责：
 
 - 项目级 `AGENTS.md` / `CLAUDE.md`
 - 某个业务领域的编码 skill
-- 运行时缓存、历史记录或工具内部状态
+- 聊天历史、缓存、工具内部状态
 
-## 当前包含
+## 典型使用场景
 
-- `doctor-agent-skills`
-- `extract-agent-skill-pack`
+### 场景 1：我刚看到一个新 skill 链接，想安全纳入本地体系
+
+你可以这样做：
+
+1. 用 `find-skills` 先确认是否合适
+2. 用 `install-linked-agent-skills` 导入到 `vendor/`
+3. 自动重建 `Codex` / `Claude Code` 的入口层
+
+示例：
+
+```bash
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/install-linked-agent-skills/scripts/install-linked-skill.sh \
+  "https://github.com/owner/repo"
+```
+
+适合的 skill：
+
 - `find-skills`
 - `install-linked-agent-skills`
+
+### 场景 2：我的 skill 目录已经很乱，想重新收敛
+
+你可以这样做：
+
+1. 用 `doctor-agent-skills` 看当前有哪些坏链和非托管链接
+2. 用 `organize-agent-skills` 明确应该如何收敛
+3. 用 `sync-agent-skills` 把运行态重建到正确状态
+
+示例：
+
+```bash
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/doctor-agent-skills/scripts/doctor-agent-skills.sh
+
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/sync-agent-skills/scripts/sync-agent-skills.sh
+```
+
+适合的 skill：
+
+- `doctor-agent-skills`
 - `organize-agent-skills`
-- `release-agent-skill-pack`
 - `sync-agent-skills`
+
+### 场景 3：vendor 里的 skill 包已经落后了
+
+你可以这样做：
+
+1. 用 `update-vendor-skills` 更新单个包或全部包
+2. 更新后自动跑 `bootstrap.sh --force`
+3. 再自动跑 `check.sh`
+
+示例：
+
+```bash
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/update-vendor-skills/scripts/update-vendor-skills.sh
+
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/update-vendor-skills/scripts/update-vendor-skills.sh superpowers
+```
+
+适合的 skill：
+
 - `update-vendor-skills`
 
-## 与 `agent-hub` 的关系
+### 场景 4：我本地写了一组 skill，想拆成独立仓库
 
-- `skm` 是一个独立 skill 包仓库
-- `agent-hub` 是本地的技能编排层与入口层
-- `agent-hub` 通过 vendor 目录消费 `skm`
-- `bootstrap.sh` / `check.sh` 负责把这个包暴露给 `Codex` 和 `Claude Code`
+你可以这样做：
+
+1. 用 `extract-agent-skill-pack` 先生成一个独立仓库骨架
+2. 用 `release-agent-skill-pack` 做发布前检查并生成 checklist
+3. 后续再接回 `vendor/`
+
+示例：
+
+```bash
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/extract-agent-skill-pack/scripts/extract-agent-skill-pack.sh \
+  ~/.dotfiles/.config/agent-hub/skills/personal \
+  ~/tmp/my-skill-pack \
+  alpha-skill beta-skill
+
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/release-agent-skill-pack/scripts/release-agent-skill-pack.sh \
+  ~/tmp/my-skill-pack
+```
+
+适合的 skill：
+
+- `extract-agent-skill-pack`
+- `release-agent-skill-pack`
+
+## 当前包含的 skills
+
+- `doctor-agent-skills`：检查入口层是否 broken / unmanaged
+- `extract-agent-skill-pack`：把一组本地 skill 提取成独立仓库骨架
+- `find-skills`：发现外部可安装 skill
+- `install-linked-agent-skills`：把外部 skill 导入 `vendor/`
+- `organize-agent-skills`：整理本地散乱 skill 的结构
+- `release-agent-skill-pack`：发布前校验独立 skill 包
+- `sync-agent-skills`：把运行态入口同步回声明态
+- `update-vendor-skills`：更新 vendor skill 包并重建入口
+
+## 与 agent-hub 的关系
+
+你可以把两者理解成：
+
+- `skm`：技能生命周期能力包
+- `agent-hub`：本地技能编排层和入口层
+
+也就是说：
+
+- `skm` 提供“怎么发现、安装、整理、验证、同步、更新、发布”
+- `agent-hub` 负责“这些技能在本机上怎么挂载、怎么暴露给 agent”
 
 ## 仓库结构
 
@@ -71,4 +211,4 @@ skills/
 
 ## 下一步
 
-已规划的优化方向见 `ROADMAP.md`。
+如果你想继续了解后续优化方向，见 `ROADMAP.md`。
