@@ -49,6 +49,7 @@
 - `find-skills`
 - `install-linked-agent-skills`
 - `organize-agent-skills`
+- `release-agent-skill-pack`
 - `sync-agent-skills`
 - `update-vendor-skills`
 
@@ -246,7 +247,6 @@
 建议优先顺序：
 
 1. `extract-agent-skill-pack`
-2. `release-agent-skill-pack`
 
 ---
 
