@@ -1,5 +1,5 @@
 ---
-name: update-vendor-skills
+name: skm-update-vendor-skills
 description: Use when vendor skill packages under `~/.dotfiles/.config/agent-hub/skills/vendor` may have upstream updates and you want to refresh one package or all packages, then rebuild and verify the Codex and Claude Code entrypoints.
 ---
 
@@ -20,7 +20,7 @@ Use this skill when:
 - you imported a package earlier and now want to refresh it
 - you want to update all vendor packages in one pass
 
-Do not use this skill for first-time installation of a new package. Use `install-linked-agent-skills` for that.
+Do not use this skill for first-time installation of a new package. Use `skm-install-linked-agent-skills` for that.
 
 ## Core Rule
 
@@ -32,7 +32,7 @@ After every vendor update:
 Run the bundled script:
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/update-vendor-skills/scripts/update-vendor-skills.sh [package-name...]
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-update-vendor-skills/scripts/skm-update-vendor-skills.sh [package-name...]
 ```
 
 ## Workflow
@@ -48,11 +48,11 @@ bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/update-vendor-skills
 Examples:
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/update-vendor-skills/scripts/update-vendor-skills.sh
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-update-vendor-skills/scripts/skm-update-vendor-skills.sh
 
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/update-vendor-skills/scripts/update-vendor-skills.sh superpowers
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-update-vendor-skills/scripts/skm-update-vendor-skills.sh superpowers
 
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/update-vendor-skills/scripts/update-vendor-skills.sh superpowers skm
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-update-vendor-skills/scripts/skm-update-vendor-skills.sh superpowers skm
 ```
 
 ### 3. Read the result

@@ -1,5 +1,5 @@
 ---
-name: release-agent-skill-pack
+name: skm-release-agent-skill-pack
 description: Use when a local agent skill pack is ready to become a standalone GitHub repository and you want to validate its structure, frontmatter, and release readiness, then generate a first-release checklist.
 ---
 
@@ -19,7 +19,7 @@ Use this skill when:
 - you want to check README, skill structure, and frontmatter before publishing
 - you want a reusable release checklist instead of ad-hoc notes
 
-Do not use this skill for updating an already installed vendor package. Use `update-vendor-skills` for that.
+Do not use this skill for updating an already installed vendor package. Use `skm-update-vendor-skills` for that.
 
 ## Core Rule
 
@@ -32,7 +32,7 @@ Before release:
 Run:
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/release-agent-skill-pack/scripts/release-agent-skill-pack.sh <repo-path>
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-release-agent-skill-pack/scripts/skm-release-agent-skill-pack.sh <repo-path>
 ```
 
 ## Workflow
@@ -40,7 +40,7 @@ bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/release-agent-skill-
 ### 1. Point it at the target repository
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/release-agent-skill-pack/scripts/release-agent-skill-pack.sh \
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-release-agent-skill-pack/scripts/skm-release-agent-skill-pack.sh \
   /path/to/skill-pack
 ```
 

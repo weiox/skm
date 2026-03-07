@@ -1,5 +1,5 @@
 ---
-name: extract-agent-skill-pack
+name: skm-extract-agent-skill-pack
 description: Use when a set of local skills should be split out from an existing source tree into a standalone skill-pack repository skeleton, while keeping the original skills in place until the new repository is reviewed and reconnected through `vendor`.
 ---
 
@@ -23,7 +23,7 @@ Use this skill when:
 - you want to split skills out of a larger local source tree
 - you want a safer first step before publishing or reconnecting through `vendor`
 
-Do not use this skill to import an external repo. Use `install-linked-agent-skills` for that.
+Do not use this skill to import an external repo. Use `skm-install-linked-agent-skills` for that.
 
 ## Core Rule
 
@@ -33,21 +33,21 @@ The safe sequence is:
 
 1. copy selected skills into a new repo skeleton
 2. review the new pack
-3. run `release-agent-skill-pack`
+3. run `skm-release-agent-skill-pack`
 4. reconnect the released repo through `vendor`
 5. only then remove the original local copies
 
 ## Command
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/extract-agent-skill-pack/scripts/extract-agent-skill-pack.sh \
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-extract-agent-skill-pack/scripts/skm-extract-agent-skill-pack.sh \
   <source-root> <target-repo> <skill-name...>
 ```
 
 Example:
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/extract-agent-skill-pack/scripts/extract-agent-skill-pack.sh \
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-extract-agent-skill-pack/scripts/skm-extract-agent-skill-pack.sh \
   ~/.dotfiles/.config/agent-hub/skills/personal \
   ~/tmp/my-skill-pack \
   alpha-skill beta-skill
@@ -66,7 +66,7 @@ The script creates:
 
 - moving source skills too early
 - extracting unrelated skills into one pack
-- forgetting to run `release-agent-skill-pack` before publishing
+- forgetting to run `skm-release-agent-skill-pack` before publishing
 - forgetting to reconnect the new repo through `vendor`
 
 ## Completion Checklist

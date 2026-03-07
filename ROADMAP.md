@@ -45,14 +45,14 @@
 
 当前已完成：
 
-- `doctor-agent-skills`
-- `extract-agent-skill-pack`
-- `find-skills`
-- `install-linked-agent-skills`
-- `organize-agent-skills`
-- `release-agent-skill-pack`
-- `sync-agent-skills`
-- `update-vendor-skills`
+- `skm-doctor-agent-skills`
+- `skm-extract-agent-skill-pack`
+- `skm-find-skills`
+- `skm-install-linked-agent-skills`
+- `skm-organize-agent-skills`
+- `skm-release-agent-skill-pack`
+- `skm-sync-agent-skills`
+- `skm-update-vendor-skills`
 
 当前短板：
 
@@ -105,7 +105,7 @@
 
 目标：补齐目前缺失的技能运维动作。
 
-### P1-1. `doctor-agent-skills`
+### P1-1. `skm-doctor-agent-skills`
 
 职责：
 
@@ -118,7 +118,7 @@
 
 - 让排查问题变成标准流程
 
-### P1-2. `update-vendor-skills`
+### P1-2. `skm-update-vendor-skills`
 
 职责：
 
@@ -130,7 +130,7 @@
 
 - 把 vendor 升级从“手工操作”变成标准 workflow
 
-### P1-3. `sync-agent-skills`
+### P1-3. `skm-sync-agent-skills`
 
 职责：
 
@@ -148,7 +148,7 @@
 
 目标：让 skill 从“本地资产”演进成“可发布资产”。
 
-### P2-1. `extract-agent-skill-pack`
+### P2-1. `skm-extract-agent-skill-pack`
 
 职责：
 
@@ -160,7 +160,7 @@
 
 - 复用你刚完成的 `skm` 拆仓经验
 
-### P2-2. `release-agent-skill-pack`
+### P2-2. `skm-release-agent-skill-pack`
 
 职责：
 

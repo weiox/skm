@@ -1,5 +1,5 @@
 ---
-name: organize-agent-skills
+name: skm-organize-agent-skills
 description: Use when local skills for Codex and Claude Code are scattered across `~/.agents/skills`, `~/.claude/skills`, `~/.codex/skills`, or ad-hoc folders and you want to consolidate them into a single source of truth under `~/.dotfiles/.config/agent-hub/skills` while keeping tool-specific symlink entrypoints.
 ---
 

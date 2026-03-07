@@ -1,5 +1,5 @@
 ---
-name: doctor-agent-skills
+name: skm-doctor-agent-skills
 description: Use when agent skill entrypoints for Codex and Claude Code may be broken, duplicated, unmanaged, or drifting away from `~/.dotfiles/.config/agent-hub/skills`, and you want a structured diagnosis before fixing anything.
 ---
 
@@ -34,7 +34,7 @@ Diagnose first, then fix.
 Run the doctor script before making cleanup changes:
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/doctor-agent-skills/scripts/doctor-agent-skills.sh
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-doctor-agent-skills/scripts/skm-doctor-agent-skills.sh
 ```
 
 ## What It Reports
@@ -50,7 +50,7 @@ The script classifies each entrypoint symlink as:
 ### 1. Run the doctor
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/doctor-agent-skills/scripts/doctor-agent-skills.sh
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-doctor-agent-skills/scripts/skm-doctor-agent-skills.sh
 ```
 
 ### 2. Read the categories
@@ -63,8 +63,8 @@ bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/doctor-agent-skills/
 
 After diagnosis:
 
-- use `organize-agent-skills` when source-of-truth layout is wrong
-- use `install-linked-agent-skills` when a vendor package is missing
+- use `skm-organize-agent-skills` when source-of-truth layout is wrong
+- use `skm-install-linked-agent-skills` when a vendor package is missing
 - use `bootstrap.sh --force` when the source is correct and only the entrypoints need rebuilding
 
 ## Common Mistakes

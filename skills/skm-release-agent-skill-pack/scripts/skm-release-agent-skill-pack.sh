@@ -4,7 +4,7 @@ set -euo pipefail
 
 usage() {
   cat <<'EOF'
-Usage: release-agent-skill-pack.sh <repo-path>
+Usage: skm-release-agent-skill-pack.sh <repo-path>
 EOF
 }
 

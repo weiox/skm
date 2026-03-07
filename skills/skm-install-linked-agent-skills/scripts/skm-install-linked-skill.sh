@@ -10,13 +10,13 @@ VENDOR_ROOT="$AGENT_HUB_ROOT/skills/vendor"
 
 usage() {
   cat <<'EOF'
-Usage: install-linked-skill.sh <link> [vendor-name]
+Usage: skm-install-linked-skill.sh <link> [vendor-name]
 
 Examples:
-  install-linked-skill.sh "https://github.com/owner/repo"
-  install-linked-skill.sh "https://skills.sh/owner/repo/skill-name"
-  install-linked-skill.sh "owner/repo@skill-name" custom-name
-  install-linked-skill.sh "/path/to/local/git/repo" local-pack
+  skm-install-linked-skill.sh "https://github.com/owner/repo"
+  skm-install-linked-skill.sh "https://skills.sh/owner/repo/skill-name"
+  skm-install-linked-skill.sh "owner/repo@skill-name" custom-name
+  skm-install-linked-skill.sh "/path/to/local/git/repo" local-pack
 EOF
 }
 

@@ -1,5 +1,5 @@
 ---
-name: sync-agent-skills
+name: skm-sync-agent-skills
 description: Use when the declared skill layout under `~/.dotfiles/.config/agent-hub/skills` and the live entrypoints in `~/.agents/skills` or `~/.claude/skills` may be out of sync, and you want to rebuild missing links while removing stale or unmanaged symlinks.
 ---
 
@@ -20,7 +20,7 @@ Use this skill when:
 - unmanaged symlinks exist in `~/.agents/skills` or `~/.claude/skills`
 - you want to reconcile the current runtime state to the declared layout
 
-Do not use this skill to discover new external packages. Use `install-linked-agent-skills` for that.
+Do not use this skill to discover new external packages. Use `skm-install-linked-agent-skills` for that.
 
 ## Core Rule
 
@@ -33,19 +33,19 @@ Sync means:
 Run:
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/sync-agent-skills/scripts/sync-agent-skills.sh
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-sync-agent-skills/scripts/skm-sync-agent-skills.sh
 ```
 
 ## Workflow
 
 ### 1. Diagnose if needed
 
-If you are not sure what is wrong, run `doctor-agent-skills` first.
+If you are not sure what is wrong, run `skm-doctor-agent-skills` first.
 
 ### 2. Run sync
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/sync-agent-skills/scripts/sync-agent-skills.sh
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-sync-agent-skills/scripts/skm-sync-agent-skills.sh
 ```
 
 ### 3. Read the diff-style output

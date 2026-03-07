@@ -1,5 +1,5 @@
 ---
-name: install-linked-agent-skills
+name: skm-install-linked-agent-skills
 description: Use when a user pastes a GitHub repo URL, `skills.sh` link, `owner/repo@skill` reference, or local git path for an external skill package and wants it imported into `~/.dotfiles/.config/agent-hub/skills/vendor` with `Codex` and `Claude Code` entrypoints rebuilt automatically.
 ---
 
@@ -47,19 +47,19 @@ For external skill links:
 Use the bundled installer script instead of hand-writing `git submodule` commands:
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/install-linked-agent-skills/scripts/install-linked-skill.sh "<link>" [vendor-name]
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-install-linked-agent-skills/scripts/skm-install-linked-skill.sh "<link>" [vendor-name]
 ```
 
 Examples:
 
 ```bash
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/install-linked-agent-skills/scripts/install-linked-skill.sh \
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-install-linked-agent-skills/scripts/skm-install-linked-skill.sh \
   "https://github.com/obra/superpowers"
 
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/install-linked-agent-skills/scripts/install-linked-skill.sh \
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-install-linked-agent-skills/scripts/skm-install-linked-skill.sh \
   "https://skills.sh/vercel-labs/agent-skills/vercel-react-best-practices"
 
-bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/install-linked-agent-skills/scripts/install-linked-skill.sh \
+bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/skm-install-linked-agent-skills/scripts/skm-install-linked-skill.sh \
   "owner/repo@skill-name" custom-package-name
 ```
 

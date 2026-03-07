@@ -4,7 +4,7 @@ set -euo pipefail
 
 usage() {
   cat <<'EOF'
-Usage: extract-agent-skill-pack.sh <source-root> <target-repo> <skill-name...>
+Usage: skm-extract-agent-skill-pack.sh <source-root> <target-repo> <skill-name...>
 EOF
 }
 
@@ -74,7 +74,7 @@ done)
 ## Next steps
 
 - [ ] Review extracted files and remove anything pack-specific that should stay behind
-- [ ] Run \`release-agent-skill-pack\` on this repository
+- [ ] Run \`skm-release-agent-skill-pack\` on this repository
 - [ ] Create or connect a remote repository
 - [ ] Reconnect the released repository through \`skills/vendor/\`
 - [ ] Remove original source copies only after the new vendor package is live

@@ -13,12 +13,12 @@ SELF_PACKAGE="skm"
 
 usage() {
   cat <<'EOF'
-Usage: update-vendor-skills.sh [package-name...]
+Usage: skm-update-vendor-skills.sh [package-name...]
 
 Examples:
-  update-vendor-skills.sh
-  update-vendor-skills.sh superpowers
-  update-vendor-skills.sh superpowers skm
+  skm-update-vendor-skills.sh
+  skm-update-vendor-skills.sh superpowers
+  skm-update-vendor-skills.sh superpowers skm
 EOF
 }
 
