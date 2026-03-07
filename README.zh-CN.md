@@ -30,24 +30,22 @@
 
 ## 3 分钟开始使用
 
-推荐顺序：
-
-1. 把这个仓库放在 `~/.skm`
-2. 确认你的 agent 可以读取本机 skills
-3. 在 `Codex` 或 `Claude Code` 里粘贴下面这段通用提示词
+把下面这段通用提示词直接粘贴到 `Codex` 或 `Claude Code` 里。Agent 会自动 clone `skm` 骨架、初始化目录结构、并跑一轮完整的健康检查——一步到位。
 
 ### 给 Codex 和 Claude Code 的通用提示词
 
 ```text
-请把 ~/.skm 视为我本机 agent skills 的唯一 source of truth，并帮我做一次初始化检查。
+我想用 skm（https://github.com/weiox/skm）来管理我本机的 agent skills。
 
-要求：
-1. 先使用 skm-doctor-agent-skills 检查 ~/.agents/skills 和 ~/.claude/skills 的当前状态，区分 OK / BROKEN / UNMANAGED。
-2. 如果发现 skills 散落、重复、或者目录职责不清，再结合 skm-organize-agent-skills 给我整理建议。
-3. 如果 ~/.skm 本身结构可信，就继续使用 skm-sync-agent-skills 重建并同步 Codex 与 Claude Code 的入口层。
-4. 如果发现缺失的外部 skill 包，再告诉我是否应该使用 skm-install-linked-agent-skills。
-5. 如果发现 vendor 已经过时，再告诉我是否应该使用 skm-update-vendor-skills。
-6. 完成后请用中文汇报：当前健康状态、你执行了哪些检查或修复、哪些地方还需要我确认，以及建议的下一步。
+步骤：
+1. 如果 ~/.skm 不存在，先把 https://github.com/weiox/skm.git clone 到 ~/.skm，建立基本骨架。
+2. 如果 ~/.skm 已经存在，跳过 clone，直接使用。
+3. 使用 skm-doctor-agent-skills 检查 ~/.agents/skills 和 ~/.claude/skills 的当前状态，区分 OK / BROKEN / UNMANAGED。
+4. 如果发现 skills 散落、重复、或者目录职责不清，再结合 skm-organize-agent-skills 给我整理建议。
+5. 如果 ~/.skm 本身结构可信，就继续使用 skm-sync-agent-skills 重建并同步 Codex 与 Claude Code 的入口层。
+6. 如果发现缺失的外部 skill 包，再告诉我是否应该使用 skm-install-linked-agent-skills。
+7. 如果发现 vendor 已经过时，再告诉我是否应该使用 skm-update-vendor-skills。
+8. 完成后请用中文汇报：当前健康状态、你执行了哪些检查或修复、哪些地方还需要我确认，以及建议的下一步。
 
 在执行会删除、替换或覆盖现有入口链接的操作前，先明确告诉我。
 ```
@@ -56,11 +54,12 @@
 
 正常情况下，agent 会按这样的顺序工作：
 
-1. 用 `skm-doctor-agent-skills` 先诊断当前入口层
-2. 如果结构混乱，再结合 `skm-organize-agent-skills` 解释应该怎样收敛
-3. 如果 `~/.skm` 已经是可信声明态，就用 `skm-sync-agent-skills` 重建运行态入口
-4. 如果你缺少外部 skill 包，再建议使用 `skm-install-linked-agent-skills`
-5. 如果 vendor 包过旧，再建议使用 `skm-update-vendor-skills`
+1. 如果 `~/.skm` 不存在，先从 `https://github.com/weiox/skm.git` clone 骨架
+2. 用 `skm-doctor-agent-skills` 先诊断当前入口层
+3. 如果结构混乱，再结合 `skm-organize-agent-skills` 解释应该怎样收敛
+4. 如果 `~/.skm` 已经是可信声明态，就用 `skm-sync-agent-skills` 重建运行态入口
+5. 如果你缺少外部 skill 包，再建议使用 `skm-install-linked-agent-skills`
+6. 如果 vendor 包过旧，再建议使用 `skm-update-vendor-skills`
 
 你最终应该得到一份清楚的结果说明：
 
@@ -115,7 +114,7 @@
 你可以直接对 agent 说：
 
 ```text
-请把 ~/.skm 作为唯一 source of truth，先盘点 ~/.agents/skills、~/.claude/skills 和 ~/.skm 的当前状态；优先做诊断，再告诉我哪些应该归入 personal、哪些应该归入 vendor、哪些是可以删除的旧入口；等我确认后，再帮我同步入口层。
+如果 ~/.skm 不存在，先把 https://github.com/weiox/skm.git clone 到 ~/.skm。然后把 ~/.skm 作为唯一 source of truth，先盘点 ~/.agents/skills、~/.claude/skills 和 ~/.skm 的当前状态；优先做诊断，再告诉我哪些应该归入 personal、哪些应该归入 vendor、哪些是可以删除的旧入口；等我确认后，再帮我同步入口层。
 ```
 
 ## skm 能帮你解决什么

@@ -30,24 +30,22 @@ If you do not have an agent installed yet, install `Codex` or `Claude Code` firs
 
 ## Get Started in 3 Minutes
 
-Recommended flow:
-
-1. Put this repository at `~/.skm`
-2. Make sure your agent can read local skills on your machine
-3. Paste the following universal prompt into `Codex` or `Claude Code`
+Paste the following universal prompt into `Codex` or `Claude Code`. The agent will clone the `skm` skeleton, initialize the directory structure, and run a full health check — all in one step.
 
 ### Universal Prompt for Codex and Claude Code
 
 ```text
-Please treat ~/.skm as the single source of truth for my local agent skills and help me run an initialization check.
+I want to use skm (https://github.com/weiox/skm) to manage my local agent skills.
 
-Requirements:
-1. Start with skm-doctor-agent-skills to inspect ~/.agents/skills and ~/.claude/skills, and classify entries as OK, BROKEN, or UNMANAGED.
-2. If skills are scattered, duplicated, or the directory responsibilities are unclear, use skm-organize-agent-skills to explain how the layout should be cleaned up.
-3. If ~/.skm itself looks trustworthy, continue with skm-sync-agent-skills to rebuild and sync the Codex and Claude Code entrypoint layers.
-4. If external skill packages are missing, tell me whether I should use skm-install-linked-agent-skills.
-5. If vendor packages look stale, tell me whether I should use skm-update-vendor-skills.
-6. When finished, summarize in English: current health, what you inspected or repaired, what still needs my confirmation, and the recommended next step.
+Steps:
+1. If ~/.skm does not exist, clone https://github.com/weiox/skm.git to ~/.skm to set up the skeleton.
+2. If ~/.skm already exists, skip cloning and use it directly.
+3. Run skm-doctor-agent-skills to inspect ~/.agents/skills and ~/.claude/skills, and classify entries as OK, BROKEN, or UNMANAGED.
+4. If skills are scattered, duplicated, or the directory responsibilities are unclear, use skm-organize-agent-skills to explain how the layout should be cleaned up.
+5. If ~/.skm itself looks trustworthy, continue with skm-sync-agent-skills to rebuild and sync the Codex and Claude Code entrypoint layers.
+6. If external skill packages are missing, tell me whether I should use skm-install-linked-agent-skills.
+7. If vendor packages look stale, tell me whether I should use skm-update-vendor-skills.
+8. When finished, summarize in English: current health, what you inspected or repaired, what still needs my confirmation, and the recommended next step.
 
 Before doing anything that deletes, replaces, or overwrites existing entrypoint links, tell me first.
 ```
@@ -56,11 +54,12 @@ Before doing anything that deletes, replaces, or overwrites existing entrypoint 
 
 In a healthy flow, the agent will usually work in this order:
 
-1. run `skm-doctor-agent-skills` to inspect the current entrypoint layers
-2. use `skm-organize-agent-skills` if the layout itself is messy
-3. use `skm-sync-agent-skills` if `~/.skm` is already a trustworthy declared state
-4. recommend `skm-install-linked-agent-skills` if a vendor package is missing
-5. recommend `skm-update-vendor-skills` if installed vendor packages are stale
+1. clone `https://github.com/weiox/skm.git` to `~/.skm` if it does not exist yet
+2. run `skm-doctor-agent-skills` to inspect the current entrypoint layers
+3. use `skm-organize-agent-skills` if the layout itself is messy
+4. use `skm-sync-agent-skills` if `~/.skm` is already a trustworthy declared state
+5. recommend `skm-install-linked-agent-skills` if a vendor package is missing
+6. recommend `skm-update-vendor-skills` if installed vendor packages are stale
 
 The outcome should be a practical summary of:
 
@@ -115,7 +114,7 @@ Do not start by cleaning them manually. A better workflow is:
 You can say this to your agent:
 
 ```text
-Please treat ~/.skm as the only source of truth. First inspect ~/.agents/skills, ~/.claude/skills, and ~/.skm; diagnose the current state before changing anything; then tell me which skills should live in personal, which should live in vendor, and which old entrypoints can be removed. After I confirm, help me sync the entrypoint layers.
+If ~/.skm does not exist, clone https://github.com/weiox/skm.git to ~/.skm first. Then treat ~/.skm as the only source of truth. First inspect ~/.agents/skills, ~/.claude/skills, and ~/.skm; diagnose the current state before changing anything; then tell me which skills should live in personal, which should live in vendor, and which old entrypoints can be removed. After I confirm, help me sync the entrypoint layers.
 ```
 
 ## What skm Helps Solve
