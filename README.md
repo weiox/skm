@@ -209,6 +209,12 @@ bash ~/.skm/skills/skm-release-agent-skill-pack/scripts/skm-release-agent-skill-
 - `vendor/`：外部 skill 包，例如 `superpowers`
 - `exports/shared/`：给 `Claude Code` 和 `Codex` 共用的导出视图
 
+其中有一个重要约定：
+
+- `personal/` 只用于当前机器上的本地私有 skills
+- `personal/` 不会提交到 GitHub
+- 如果某个 personal skill 未来要公开或跨机器共享，应该先抽成独立 skill 包，再接回 `vendor/`
+
 如果你在 `dotfiles` 中使用 `skm`，推荐把 `dotfiles` 视为安装与集成层，而不是 skill 内容本体。
 
 ## 仓库结构
