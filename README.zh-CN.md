@@ -222,6 +222,20 @@
 
 如果你在 `dotfiles` 中使用 `skm`，推荐把 `dotfiles` 视为安装与集成层，而不是可复用 skill 的真实内容模型。
 
+### 为什么我刚创建的 skill 还是看不到？
+
+最常见的误判，是把 skill 建在 `~/.skm/personal` 之后，就以为当前 `Codex` 会话会立刻识别到它。
+
+- 第一步：用 `skm-sync-agent-skills` 或 `bash ~/.skm/scripts/bootstrap.sh --force` 重建运行时入口
+- 第二步：用 `bash ~/.skm/scripts/check.sh` 确认入口层已经健康
+- 第三步：新开一个 `Codex` 会话
+
+原因是：
+
+- `Codex` 运行时实际读取的是 `~/.agents/skills`，不是直接扫描 `~/.skm/personal`
+- 在这套布局里，`~/.agents/skills` 指向的是 `~/.skm/exports/shared`
+- `Codex` 会在会话启动时发现 skill，因此已经运行中的会话不会热刷新刚导出的新 skill
+
 ## skm 不负责什么
 
 `skm` 不负责：
@@ -245,7 +259,110 @@ skills/
 └── skm-update-vendor-skills/
 ```
 
+## 使用示例
+
+### 导入一个外部 skill 包
+
+看到一个 GitHub 或 skills.sh 上的 skill 包想用，直接把链接发给 agent：
+
+```text
+请帮我把 https://github.com/anthropics/skill-example 导入到我的 skm 里。
+```
+
+Agent 会自动识别链接，触发 `skm-install-linked-agent-skills`，把包 clone 到 `vendor/`，重建入口层，并验证结果。
+
+支持的格式：
+
+- GitHub URL：`https://github.com/anthropics/skill-example`
+- 缩写：`anthropics/skill-example@my-skill`
+- skills.sh 链接：`https://skills.sh/anthropics/skill-example/my-skill`
+- 本地 git 路径：`~/projects/my-skill-pack`
+
+### 从公共生态中发现 skill
+
+如果手上没有具体链接，只是想找某个方向的 skill，直接用自然语言描述就行：
+
+```text
+有没有做 code review 的 skill？
+```
+
+```text
+帮我找一个能生成 changelog 的 skill。
+```
+
+Agent 会触发 `skm-find-skills`，搜索公开的 skills.sh 生态，展示匹配结果，并提供安装入口。
+
+### 只需要记住 `skm`
+
+你只需要记住一个词：`skm`。
+
+`skm` 覆盖 agent skill 的完整生命周期 —— **discover、install、organize、verify、sync、update、release**。只要你的需求落在这个范围内，说 `skm` 加上你的意图就行，agent 会自动匹配到正确的 skill。
+
+| 生命周期阶段 | 示例提示词 |
+|---|---|
+| **discover** | `skm` —— 有没有能生成 changelog 的 skill？ |
+| **install** | `skm` —— 帮我导入 `https://github.com/anthropics/skill-example` |
+| **organize** | `skm` —— 我的 skills 散得到处都是，帮我收拾一下 |
+| **verify** | `skm` —— 我的 Codex skills 好像坏了，帮我看看怎么回事 |
+| **sync** | `skm` —— 我刚加了一个新的 personal skill，重建入口层 |
+| **update** | `skm` —— 看看 vendor 包有没有上游更新 |
+| **release** | `skm` —— 看看我的 skill 包是不是可以发布了 |
+
+你不需要记住 `skm-doctor-agent-skills` 或 `skm-sync-agent-skills` 这样的完整名字。`skm` 加上你的意图就够了，agent 会自己定位到对应的 skill。
+
+## 最佳实践
+
+### 1. 永远不要直接编辑入口目录
+
+`~/.agents/skills` 和 `~/.claude/skills` 是生成出来的输出，不是源码目录。如果你在那里手工修改，下次 `skm-sync-agent-skills` 会把你的改动覆盖掉。
+
+始终在 `~/.skm/personal/` 或 `~/.skm/vendor/` 下编辑，然后同步。
+
+### 2. 先诊断，再修复
+
+东西坏了的时候，不要急着手工删链接、重建目录。先跑一次 `skm-doctor-agent-skills`。诊断结果会告诉你哪些是 `OK`、`BROKEN`、`UNMANAGED`，这样你只需要修该修的部分。
+
+### 3. 一个 source of truth，两层入口
+
+核心模型是：
+
+```
+~/.skm (source of truth)
+  └── exports/shared (生成的导出视图)
+       ├── ~/.claude/skills → 符号链接
+       └── ~/.agents/skills → 符号链接
+```
+
+`Claude Code` 和 `Codex` 读的是同一份导出视图。如果一个 agent 能看到某个 skill，另一个看不到，问题几乎一定出在入口层，而不是 skill 本身。
+
+### 4. 把 vendor 和 personal 分开
+
+- `vendor/` 用来放通过 `skm-install-linked-agent-skills` 导入的第三方 skill 包。不要手动修改 `vendor/` 里的文件。
+- `personal/` 用来放你自己写的本地 skill。如果某个 personal skill 成熟了想分享，用 `skm-extract-agent-skill-pack` 把它拆成独立仓库。
+
+### 5. 每次改完都要 sync
+
+在 `personal/` 里新建了 skill、导入了新的 vendor 包、或者更新了已有包之后，都要重建入口层：
+
+```text
+帮我跑一下 skm sync 重建入口层。
+```
+
+然后开一个**新的** agent 会话。正在运行的会话不会热刷新新导出的 skill。
+
+### 6. 初始化用通用提示词
+
+"3 分钟开始使用"里的那段通用提示词，设计上会按顺序跑完诊断-整理-同步的完整流程。不管是新机器初始化，还是从混乱状态恢复，它都是最安全的起点。
+
+### 7. 把 dotfiles 当安装层
+
+如果你把 `~/.skm` 放在 dotfiles 仓库里管理，注意区分：
+
+- dotfiles 是**安装和集成**层
+- `personal/` 里的 skills 是当前机器本地的，不一定适合放进共享的 dotfiles 仓库
+- `vendor/` 包可以通过 `skm-install-linked-agent-skills` 复现，所以你可以 `.gitignore` 掉它们，在每台机器上重新安装
+
 ## 下一步
 
-如果你已经安装好 `Codex` 或 `Claude Code`，最好的下一步就是把上面的通用提示词直接发给 agent。  
+如果你已经安装好 `Codex` 或 `Claude Code`，最好的下一步就是把上面的通用提示词直接发给 agent。
 如果你想继续了解后续优化方向，见 `ROADMAP.md`。

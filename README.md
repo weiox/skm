@@ -222,6 +222,20 @@ That separation reduces drift, duplicate links, and hard-to-debug visibility pro
 
 If you keep `skm` inside your dotfiles, treat dotfiles as the installation layer, not as the true content model for reusable skills.
 
+### Why is my new skill still missing?
+
+The most common confusion is creating a skill under `~/.skm/personal` and expecting the current `Codex` session to see it immediately.
+
+- Step 1: rebuild the runtime entrypoints with `skm-sync-agent-skills` or `bash ~/.skm/scripts/bootstrap.sh --force`
+- Step 2: verify with `bash ~/.skm/scripts/check.sh`
+- Step 3: start a new `Codex` session
+
+Why this happens:
+
+- `Codex` runtime discovery comes from `~/.agents/skills`, not from `~/.skm/personal` directly
+- in this layout, `~/.agents/skills` points to `~/.skm/exports/shared`
+- `Codex` discovers skills at session startup, so an already-running session will not hot-reload a newly exported skill
+
 ## What skm Does Not Manage
 
 `skm` does not manage:
@@ -244,6 +258,109 @@ skills/
 ├── skm-sync-agent-skills/
 └── skm-update-vendor-skills/
 ```
+
+## Usage Examples
+
+### Import an external skill pack
+
+When you find a skill pack on GitHub or skills.sh that you want to use, just paste the link to your agent:
+
+```text
+Please import https://github.com/anthropics/skill-example into my skm setup.
+```
+
+The agent will recognize the link and trigger `skm-install-linked-agent-skills` automatically. It will clone the package into `vendor/`, rebuild entrypoints, and verify the result.
+
+Accepted formats:
+
+- GitHub URL: `https://github.com/anthropics/skill-example`
+- Shorthand: `anthropics/skill-example@my-skill`
+- skills.sh link: `https://skills.sh/anthropics/skill-example/my-skill`
+- Local git path: `~/projects/my-skill-pack`
+
+### Discover skills from the public ecosystem
+
+If you do not have a specific link but want to find something useful, just describe what you need:
+
+```text
+Is there a skill for code review?
+```
+
+```text
+Find a skill that can help with changelog generation.
+```
+
+The agent will trigger `skm-find-skills`, search the public skills.sh ecosystem, present matching results, and offer to install them into your `vendor/`.
+
+### Just say `skm` + what you want
+
+You only need to remember one word: `skm`.
+
+`skm` covers the full agent-skill lifecycle — **discover, install, organize, verify, sync, update, release**. As long as your request falls within this range, just say `skm` and describe what you need. The agent will match your intent to the right skill automatically.
+
+| Lifecycle stage | Example prompt |
+|---|---|
+| **discover** | `skm` — is there a skill for generating changelogs? |
+| **install** | `skm` — import `https://github.com/anthropics/skill-example` |
+| **organize** | `skm` — my skills are scattered everywhere, help me clean up |
+| **verify** | `skm` — my Codex skills seem broken, check what is wrong |
+| **sync** | `skm` — I just added a new personal skill, rebuild entrypoints |
+| **update** | `skm` — check if vendor packages have upstream changes |
+| **release** | `skm` — check if my skill pack is ready to publish |
+
+You do not need to remember exact skill names like `skm-doctor-agent-skills` or `skm-sync-agent-skills`. The word `skm` plus your intent is enough — the agent resolves the rest.
+
+## Best Practices
+
+### 1. Never edit entrypoint directories directly
+
+`~/.agents/skills` and `~/.claude/skills` are generated output, not source directories. If you edit files there, your changes will be overwritten the next time `skm-sync-agent-skills` runs.
+
+Always edit under `~/.skm/personal/` or `~/.skm/vendor/`, then sync.
+
+### 2. Diagnose before fixing
+
+When something breaks, resist the urge to delete and recreate links manually. Run `skm-doctor-agent-skills` first. The diagnosis tells you exactly what is `OK`, `BROKEN`, or `UNMANAGED`, so you fix only what needs fixing.
+
+### 3. One source of truth, two entrypoint layers
+
+The core model is:
+
+```
+~/.skm (source of truth)
+  └── exports/shared (generated view)
+       ├── ~/.claude/skills → symlink
+       └── ~/.agents/skills → symlink
+```
+
+Both `Claude Code` and `Codex` read from the same exported view. If one agent sees a skill and the other does not, the problem is almost always in the entrypoint layer — not in the skill itself.
+
+### 4. Keep vendor and personal separate
+
+- `vendor/` is for third-party skill packs imported via `skm-install-linked-agent-skills`. Do not manually edit files inside `vendor/`.
+- `personal/` is for your own local skills. If a personal skill matures and you want to share it, use `skm-extract-agent-skill-pack` to split it into its own repository.
+
+### 5. Sync after every change
+
+After creating a new skill in `personal/`, importing a new vendor pack, or updating an existing pack, always rebuild the entrypoint layer:
+
+```text
+Please run skm sync to rebuild my entrypoints.
+```
+
+Then start a **new** agent session. Running sessions do not hot-reload newly exported skills.
+
+### 6. Use the universal prompt for initial setup
+
+The universal prompt in the "Get Started" section is designed to run the full diagnostic-organize-sync cycle in order. It is the safest way to bootstrap a fresh machine or recover from a messy state.
+
+### 7. Treat dotfiles as the installation layer
+
+If you version `~/.skm` inside your dotfiles repository, keep in mind:
+
+- dotfiles are the **installation and integration** layer
+- `personal/` skills are machine-local and may not belong in a shared dotfiles repo
+- `vendor/` packages are reproducible via `skm-install-linked-agent-skills`, so you can `.gitignore` them and reinstall on each machine
 
 ## Next Step
 

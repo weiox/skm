@@ -1,3 +1,9 @@
 [submodule "vendor/superpowers"]
 	path = vendor/superpowers
 	url = https://github.com/obra/superpowers.git
+[submodule "vendor/baoyu-skills"]
+	path = vendor/baoyu-skills
+	url = https://github.com/JimLiu/baoyu-skills.git
+[submodule "vendor/playwright-skill"]
+	path = vendor/playwright-skill
+	url = https://github.com/lackeyjb/playwright-skill.git
