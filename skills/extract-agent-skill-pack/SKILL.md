@@ -48,7 +48,7 @@ Example:
 
 ```bash
 bash ~/.dotfiles/.config/agent-hub/skills/vendor/skm/skills/extract-agent-skill-pack/scripts/extract-agent-skill-pack.sh \
-  ~/.dotfiles/.config/agent-hub/skills/personal/shared \
+  ~/.dotfiles/.config/agent-hub/skills/personal \
   ~/tmp/my-skill-pack \
   alpha-skill beta-skill
 ```

@@ -56,13 +56,13 @@ record_root_skill_names() {
 }
 
 record_expected_names() {
-  local shared_root="$AGENT_HUB_ROOT/skills/personal/shared"
+  local personal_root="$AGENT_HUB_ROOT/skills/personal"
   local vendor_root="$AGENT_HUB_ROOT/skills/vendor"
   local claude_file="$1"
   local codex_file="$2"
 
-  record_root_skill_names "$shared_root" "$claude_file"
-  record_root_skill_names "$shared_root" "$codex_file"
+  record_root_skill_names "$personal_root" "$claude_file"
+  record_root_skill_names "$personal_root" "$codex_file"
 
   while read -r package_dir; do
     [[ -n "$package_dir" ]] || continue

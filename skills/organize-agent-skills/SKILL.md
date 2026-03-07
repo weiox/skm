@@ -42,7 +42,7 @@ Keep the repository layout minimal:
 
 Apply these rules:
 
-- your own reusable skills go in `~/.dotfiles/.config/agent-hub/skills/personal/shared/`
+- your own reusable skills go in `~/.dotfiles/.config/agent-hub/skills/personal/`
 - third-party skill packs go in `~/.dotfiles/.config/agent-hub/skills/vendor/`
 - `~/.agents/skills` and `~/.claude/skills` should contain symlinks only
 - do not treat `~/.codex/skills/.system` or runtime caches as part of your personal library
@@ -61,7 +61,7 @@ find ~/.dotfiles/.config/agent-hub/skills -maxdepth 4 | sort
 
 Then classify each item into exactly one bucket:
 
-- **personal/shared**: you own the content and want to maintain it
+- **personal**: you own the content and want to maintain it
 - **vendor**: upstream package you want to track separately
 - **ignore**: runtime files, tool internals, obsolete duplicates
 
@@ -70,7 +70,7 @@ Then classify each item into exactly one bucket:
 For each personal skill:
 
 1. Choose one canonical name
-2. Move the real `SKILL.md` under `~/.dotfiles/.config/agent-hub/skills/personal/shared/<skill-name>/`
+2. Move the real `SKILL.md` under `~/.dotfiles/.config/agent-hub/skills/personal/<skill-name>/`
 3. Remove duplicate source copies outside `agent-hub`
 4. Rebuild entrypoint symlinks with:
 
@@ -114,7 +114,7 @@ Use this table when classifying a skill:
 
 | Situation | Destination |
 | --- | --- |
-| You wrote it and will maintain it | `skills/personal/shared/` |
+| You wrote it and will maintain it | `skills/personal/` |
 | It comes from an upstream package | `skills/vendor/<package>/` |
 | It is tool-generated or runtime-only | Do not store in `agent-hub` |
 | It is repo-specific guidance | Keep it in the repo, not here |
@@ -132,7 +132,7 @@ Use this table when classifying a skill:
 Before calling the reorganization done:
 
 1. every maintained skill lives under `~/.dotfiles/.config/agent-hub/skills`
-2. personal skills exist only under `skills/personal/shared/`
+2. personal skills exist only under `skills/personal/`
 3. vendor packs exist only under `skills/vendor/`
 4. `~/.agents/skills` and `~/.claude/skills` are regenerated symlink entrypoints
 5. `bash ~/.dotfiles/.config/agent-hub/scripts/check.sh` passes
