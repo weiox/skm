@@ -40,6 +40,7 @@
 ## 当前包含
 
 - `doctor-agent-skills`
+- `extract-agent-skill-pack`
 - `find-skills`
 - `install-linked-agent-skills`
 - `organize-agent-skills`
@@ -59,6 +60,7 @@
 ```text
 skills/
 ├── doctor-agent-skills/
+├── extract-agent-skill-pack/
 ├── find-skills/
 ├── install-linked-agent-skills/
 ├── organize-agent-skills/

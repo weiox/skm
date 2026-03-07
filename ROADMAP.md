@@ -46,6 +46,7 @@
 当前已完成：
 
 - `doctor-agent-skills`
+- `extract-agent-skill-pack`
 - `find-skills`
 - `install-linked-agent-skills`
 - `organize-agent-skills`
@@ -246,7 +247,7 @@
 
 建议优先顺序：
 
-1. `extract-agent-skill-pack`
+1. `adopt-agent-skill-pack`
 
 ---
 
