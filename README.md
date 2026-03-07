@@ -65,22 +65,27 @@ The outcome should be a practical summary of:
 
 Most people do not realize they need `skm` when they first install a skill. They realize it later, when the setup starts drifting and nobody remembers what is actually being managed.
 
-`skm` is designed to solve these recurring pain points:
+The pain usually looks like this:
 
-- **“I found a skill pack, but I don't know where it should live.”**
-  A common mistake is cloning or copying a skill straight into `~/.agents/skills` or `~/.claude/skills`. It may appear to work at first, but later it becomes hard to update, track, or migrate. `skm` fixes this by keeping external packs in `vendor/` and rebuilding entrypoints from a managed source tree.
+- **Problem: external skills get installed wherever they happen to fit**
+  - Consequence: people clone or copy skills directly into `~/.agents/skills` or `~/.claude/skills`, which works briefly but makes updates, auditing, and migration harder later.
+  - How `skm` helps: it gives external packs a stable home in `vendor/` and rebuilds entrypoints from a managed source tree instead of treating tool-owned directories as the place to maintain content.
 
-- **“My local skills are scattered everywhere.”**
-  Over time, skills end up spread across tool-owned directories, personal folders, old machines, and one-off experiments. At that point, it becomes unclear which copy is the real source of truth. `skm` gives you one declared home under `~/.skm` and treats agent-visible directories as generated entrypoints instead of editable source directories.
+- **Problem: local skills slowly scatter across multiple directories**
+  - Consequence: after enough experiments, old machines, and one-off edits, nobody can confidently say which copy is the real source of truth.
+  - How `skm` helps: it centers the declared layout under `~/.skm` and treats visible agent directories as generated entrypoints rather than editable source directories.
 
-- **“Codex can see a skill, but Claude Code cannot.”**
-  This usually means the entrypoint layers have drifted, old symlinks are still hanging around, or unmanaged links were added by hand. `skm` gives you a diagnosis-first workflow so you can inspect what is `OK`, `BROKEN`, or `UNMANAGED` before rebuilding the runtime view.
+- **Problem: one agent sees a skill and another does not**
+  - Consequence: you end up debugging symptoms instead of structure, because broken symlinks, stale links, and unmanaged entrypoints all look like random visibility bugs.
+  - How `skm` helps: it gives you a diagnosis-first workflow so you can classify entries as `OK`, `BROKEN`, or `UNMANAGED` before deciding whether to rebuild the runtime view.
 
-- **“I want to update vendor skills, but I do not trust manual edits.”**
-  Pulling changes directly in the wrong place or editing symlink layers by hand is risky and hard to repeat. `skm` makes vendor updates a managed flow: update the package, rebuild entrypoints, then verify the result.
+- **Problem: vendor updates feel risky and manual**
+  - Consequence: people either avoid updates, or they edit the wrong place by hand and make the setup harder to reproduce.
+  - How `skm` helps: it turns vendor updates into a managed sequence of update, rebuild, and verification instead of ad hoc filesystem surgery.
 
-- **“I wrote useful local skills, but I have no clean path to share or release them.”**
-  Many personal skills start as local experiments and later become reusable. Without a structure, extracting them into a standalone pack is messy. `skm` gives you a path from local skills to extractable, releasable packages without losing the local source-of-truth model.
+- **Problem: useful personal skills have no clear path to become reusable packs**
+  - Consequence: local skills stay trapped as private experiments, or extracting them later becomes messy because there was never a clean packaging boundary.
+  - How `skm` helps: it gives you a path from local skills to extractable and releasable skill packs without abandoning the local source-of-truth model.
 
 ## If You Already Have Many Skills
 
