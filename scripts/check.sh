@@ -22,6 +22,42 @@ assert_skill_source_exists() {
   [[ -d "$dir" ]] || fail "missing source dir: $dir"
   [[ -f "$dir/SKILL.md" ]] || fail "missing SKILL.md: $dir/SKILL.md"
 }
+
+sources_file="$(mktemp)"
+trap 'rm -f "$sources_file"' EXIT
+
+remember_skill_source() {
+  local entry_name="$1"
+  local source_dir="$2"
+  printf '%s\t%s\n' "$entry_name" "$source_dir" >> "$sources_file"
+}
+
+print_conflicts() {
+  awk -F '\t' '
+    {
+      key = $1 FS $2
+      if (seen[key]++) next
+      count[$1]++
+      sources[$1] = sources[$1] ? sources[$1] " ; " $2 : $2
+    }
+    END {
+      for (name in count) {
+        if (count[name] > 1) {
+          printf "%s\t%s\n", name, sources[name]
+        }
+      }
+    }
+  ' "$sources_file" | sort | while IFS=$'\t' read -r name sources; do
+    [[ -n "$name" ]] || continue
+    printf 'CONFLICT %s -> %s\n' "$name" "$sources"
+  done
+}
+
+assert_no_conflicts() {
+  local conflict_output
+  conflict_output="$(print_conflicts)"
+  [[ -z "$conflict_output" ]] || fail "$conflict_output"
+}
 iter_skill_dirs() {
   local source_root="$1"
   [[ -d "$source_root" ]] || return 0
@@ -38,6 +74,15 @@ vendor_skill_root() {
     printf '%s\n' "$package_dir"
   fi
 }
+record_root_skill_sources() {
+  local source_root="$1"
+  while read -r skill_dir; do
+    [[ -n "$skill_dir" ]] || continue
+    assert_skill_source_exists "$skill_dir"
+    remember_skill_source "$(basename "$skill_dir")" "$skill_dir"
+  done < <(iter_skill_dirs "$source_root")
+}
+
 check_root_skill_dirs() {
   local source_root="$1"
   while read -r skill_dir; do
@@ -46,6 +91,14 @@ check_root_skill_dirs() {
     assert_symlink_to "$SHARED_EXPORT_DIR/$(basename "$skill_dir")" "$skill_dir"
   done < <(iter_skill_dirs "$source_root")
 }
+record_vendor_skill_sources() {
+  local vendor_root="$1"
+  [[ -d "$vendor_root" ]] || return 0
+  find "$vendor_root" -mindepth 1 -maxdepth 1 -type d | sort | while read -r package_dir; do
+    record_root_skill_sources "$(vendor_skill_root "$package_dir")"
+  done
+}
+
 check_vendor_packages() {
   local vendor_root="$1"
   [[ -d "$vendor_root" ]] || return 0
@@ -55,6 +108,10 @@ check_vendor_packages() {
 }
 assert_symlink_to "$CLAUDE_SKILLS_DIR" "$SHARED_EXPORT_DIR"
 assert_symlink_to "$CODEX_SKILLS_DIR" "$SHARED_EXPORT_DIR"
+record_root_skill_sources "$SKM_DIR/skills"
+record_root_skill_sources "$SKM_DIR/personal"
+record_vendor_skill_sources "$SKM_DIR/vendor"
+assert_no_conflicts
 check_root_skill_dirs "$SKM_DIR/skills"
 check_root_skill_dirs "$SKM_DIR/personal"
 check_vendor_packages "$SKM_DIR/vendor"

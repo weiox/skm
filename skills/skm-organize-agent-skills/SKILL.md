@@ -34,8 +34,8 @@ Keep the repository layout minimal:
 ```text
 ~/.skm/
 ├── personal/
-│   └── shared/
-│       └── <skill-name>/SKILL.md
+│   └── <skill-name>/
+│       └── SKILL.md
 └── vendor/
     └── <package>/
 ```
@@ -51,15 +51,21 @@ Apply these rules:
 
 ### 1. Inventory everything first
 
-Check the active skill sources before moving anything:
+Start with the bundled dry-run inventory:
 
 ```bash
-find ~/.agents/skills -maxdepth 2 | sort
-find ~/.claude/skills -maxdepth 2 | sort
-find ~/.skm -maxdepth 4 | sort
+bash ~/.skm/skills/skm-organize-agent-skills/scripts/skm-organize-agent-skills.sh
 ```
 
-Then classify each item into exactly one bucket:
+If you also want to inspect an ad-hoc folder of old skills, add one or more scan roots:
+
+```bash
+bash ~/.skm/skills/skm-organize-agent-skills/scripts/skm-organize-agent-skills.sh \
+  --scan-root ~/old-skills \
+  --scan-root ~/Downloads/skill-backups
+```
+
+The script classifies each discovered item into exactly one bucket:
 
 - **personal**: you own the content and want to maintain it
 - **vendor**: upstream package you want to track separately
@@ -67,16 +73,20 @@ Then classify each item into exactly one bucket:
 
 ### 2. Consolidate personal skills
 
-For each personal skill:
-
-1. Choose one canonical name
-2. Move the real `SKILL.md` under `~/.skm/personal/<skill-name>/`
-3. Remove duplicate source copies outside `skm`
-4. Rebuild entrypoint symlinks with:
+Review the dry-run output first. When the plan looks correct, apply it explicitly:
 
 ```bash
-bash ~/.skm/scripts/bootstrap.sh --force
+bash ~/.skm/skills/skm-organize-agent-skills/scripts/skm-organize-agent-skills.sh \
+  --apply \
+  --scan-root ~/old-skills
 ```
+
+In apply mode, the script:
+
+1. moves personal skills into `~/.skm/personal/<skill-name>/`
+2. moves git-backed upstream packs into `~/.skm/vendor/<package>/`
+3. runs `bootstrap.sh --force`
+4. runs `check.sh`
 
 ### 3. Consolidate vendor skills
 
@@ -85,17 +95,18 @@ For third-party skill packs:
 - prefer `git submodule` under `~/.skm/vendor/`
 - keep the upstream package intact instead of copying individual files by hand
 - let `bootstrap.sh` expose vendor skills to the agent entrypoints
+- treat a git-backed external repo as a vendor package, not as a personal skill
 
 Example:
 
 ```bash
-git -C ~/.dotfiles submodule add https://github.com/obra/superpowers.git \
-  ~/.skm/vendor/superpowers
+bash ~/.skm/skills/skm-organize-agent-skills/scripts/skm-organize-agent-skills.sh \
+  --scan-root ~/src/superpowers
 ```
 
 ### 4. Verify the entrypoints
 
-After any move, confirm the generated entrypoints:
+After apply mode runs, confirm the generated entrypoints:
 
 ```bash
 bash ~/.skm/scripts/check.sh
@@ -114,8 +125,8 @@ Use this table when classifying a skill:
 
 | Situation | Destination |
 | --- | --- |
-| You wrote it and will maintain it | `skills/personal/` |
-| It comes from an upstream package | `skills/vendor/<package>/` |
+| You wrote it and will maintain it | `~/.skm/personal/<skill-name>/` |
+| It comes from an upstream package | `~/.skm/vendor/<package>/` |
 | It is tool-generated or runtime-only | Do not store in `skm` |
 | It is repo-specific guidance | Keep it in the repo, not here |
 
@@ -132,7 +143,7 @@ Use this table when classifying a skill:
 Before calling the reorganization done:
 
 1. every maintained skill lives under `~/.skm`
-2. personal skills exist only under `skills/personal/`
-3. vendor packs exist only under `skills/vendor/`
+2. personal skills exist only under `~/.skm/personal/`
+3. vendor packs exist only under `~/.skm/vendor/`
 4. `~/.agents/skills` and `~/.claude/skills` are regenerated symlink entrypoints
 5. `bash ~/.skm/scripts/check.sh` passes

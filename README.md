@@ -40,7 +40,7 @@ I want to use skm (https://github.com/weiox/skm) to manage my local agent skills
 Steps:
 1. If ~/.skm does not exist, clone https://github.com/weiox/skm.git to ~/.skm to set up the skeleton.
 2. If ~/.skm already exists, skip cloning and use it directly.
-3. Run skm-doctor-agent-skills to inspect ~/.agents/skills and ~/.claude/skills, and classify entries as OK, BROKEN, or UNMANAGED.
+3. Run skm-doctor-agent-skills to inspect ~/.agents/skills and ~/.claude/skills, and classify entries as OK, BROKEN, UNMANAGED, or CONFLICT.
 4. If skills are scattered, duplicated, or the directory responsibilities are unclear, use skm-organize-agent-skills to explain how the layout should be cleaned up.
 5. If ~/.skm itself looks trustworthy, continue with skm-sync-agent-skills to rebuild and sync the Codex and Claude Code entrypoint layers.
 6. If external skill packages are missing, tell me whether I should use skm-install-linked-agent-skills.
@@ -64,7 +64,7 @@ In a healthy flow, the agent will usually work in this order:
 The outcome should be a practical summary of:
 
 - whether the current setup is healthy
-- which links are `OK`, `BROKEN`, or `UNMANAGED`
+- which links are `OK`, `BROKEN`, `UNMANAGED`, or `CONFLICT`
 - what the agent actually repaired
 - what still needs your confirmation
 - whether you should organize, install, sync, or update next
@@ -162,6 +162,15 @@ Use:
 
 The principle is: diagnose first, organize second, sync last.
 
+Start with a dry-run inventory:
+
+```bash
+bash ~/.skm/skills/skm-organize-agent-skills/scripts/skm-organize-agent-skills.sh \
+  --scan-root ~/old-skills
+```
+
+Review the plan first. Add `--apply` only when you want the script to move personal skills into `personal/`, move git-backed packs into `vendor/`, and rebuild the entrypoints.
+
 ### 4. My vendor packages are outdated
 
 Use:
@@ -181,13 +190,13 @@ The usual flow is: extract first, validate release readiness second, then decide
 
 ## Included Skills
 
-- `skm-doctor-agent-skills` — diagnose `Codex` and `Claude Code` entrypoints as `OK`, `BROKEN`, or `UNMANAGED`
+- `skm-doctor-agent-skills` — diagnose `Codex` and `Claude Code` entrypoints as `OK`, `BROKEN`, `UNMANAGED`, or `CONFLICT`
 - `skm-extract-agent-skill-pack` — extract a set of local skills into a standalone repository skeleton
 - `skm-find-skills` — discover external installable skills
 - `skm-install-linked-agent-skills` — import an external skill pack into `vendor/`
-- `skm-organize-agent-skills` — consolidate scattered local skills into a clean source-of-truth layout
+- `skm-organize-agent-skills` — inventory scattered skills in dry-run mode and optionally apply safe moves into the managed `skm` layout
 - `skm-release-agent-skill-pack` — validate a standalone skill pack before release
-- `skm-sync-agent-skills` — rebuild runtime entrypoints from the declared `skm` layout
+- `skm-sync-agent-skills` — rebuild runtime entrypoints from the declared `skm` layout and abort on duplicate declared skill names
 - `skm-update-vendor-skills` — update vendor skill packs and rebuild entrypoints
 
 ## Directory and Runtime Model
@@ -258,6 +267,23 @@ skills/
 └── skm-update-vendor-skills/
 ```
 
+## Local Test Suite
+
+For local, network-free verification, run:
+
+```bash
+bash tests/run-all.sh
+```
+
+This suite covers fake-home checks for:
+
+- doctor
+- organize
+- bootstrap
+- sync
+- install
+- update
+
 ## Usage Examples
 
 ### Import an external skill pack
@@ -319,7 +345,7 @@ Always edit under `~/.skm/personal/` or `~/.skm/vendor/`, then sync.
 
 ### 2. Diagnose before fixing
 
-When something breaks, resist the urge to delete and recreate links manually. Run `skm-doctor-agent-skills` first. The diagnosis tells you exactly what is `OK`, `BROKEN`, or `UNMANAGED`, so you fix only what needs fixing.
+When something breaks, resist the urge to delete and recreate links manually. Run `skm-doctor-agent-skills` first. The diagnosis tells you exactly what is `OK`, `BROKEN`, `UNMANAGED`, or `CONFLICT`, so you fix only what needs fixing.
 
 ### 3. One source of truth, two entrypoint layers
 

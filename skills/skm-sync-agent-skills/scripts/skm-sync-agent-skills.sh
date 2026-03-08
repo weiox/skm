@@ -133,6 +133,7 @@ main() {
   snapshot_names "$SKM_SHARED_EXPORT_DIR" "$after_shared"
 
   print_added_removed "shared" "$before_shared" "$after_shared"
+  printf 'NOTE session restart: if a newly created skill is still missing in Codex, start a new session after sync.\n'
 
   rm -f "$expected_shared" "$before_shared" "$after_shared"
 }

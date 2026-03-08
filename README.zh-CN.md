@@ -40,7 +40,7 @@
 步骤：
 1. 如果 ~/.skm 不存在，先把 https://github.com/weiox/skm.git clone 到 ~/.skm，建立基本骨架。
 2. 如果 ~/.skm 已经存在，跳过 clone，直接使用。
-3. 使用 skm-doctor-agent-skills 检查 ~/.agents/skills 和 ~/.claude/skills 的当前状态，区分 OK / BROKEN / UNMANAGED。
+3. 使用 skm-doctor-agent-skills 检查 ~/.agents/skills 和 ~/.claude/skills 的当前状态，区分 OK / BROKEN / UNMANAGED / CONFLICT。
 4. 如果发现 skills 散落、重复、或者目录职责不清，再结合 skm-organize-agent-skills 给我整理建议。
 5. 如果 ~/.skm 本身结构可信，就继续使用 skm-sync-agent-skills 重建并同步 Codex 与 Claude Code 的入口层。
 6. 如果发现缺失的外部 skill 包，再告诉我是否应该使用 skm-install-linked-agent-skills。
@@ -64,7 +64,7 @@
 你最终应该得到一份清楚的结果说明：
 
 - 当前是否健康
-- 哪些入口是 `OK`、`BROKEN`、`UNMANAGED`
+- 哪些入口是 `OK`、`BROKEN`、`UNMANAGED`、`CONFLICT`
 - agent 实际做了哪些修复
 - 哪些地方还需要你确认
 - 下一步该继续整理、安装、同步还是更新
@@ -162,6 +162,15 @@
 
 原则是：先诊断，再整理，最后同步。
 
+可以先做一次 dry-run 盘点：
+
+```bash
+bash ~/.skm/skills/skm-organize-agent-skills/scripts/skm-organize-agent-skills.sh \
+  --scan-root ~/old-skills
+```
+
+先看清整理计划；只有在你确认要执行迁移时，再加上 `--apply`，让脚本把 personal skill 移到 `personal/`、把 git-backed skill 包移到 `vendor/`，并重建入口层。
+
 ### 4. vendor 里的 skill 包已经落后了
 
 优先使用：
@@ -181,13 +190,13 @@
 
 ## 当前包含的 skills
 
-- `skm-doctor-agent-skills`：检查 `Codex` / `Claude Code` 的入口层是否为 `OK`、`BROKEN`、`UNMANAGED`
+- `skm-doctor-agent-skills`：检查 `Codex` / `Claude Code` 的入口层是否为 `OK`、`BROKEN`、`UNMANAGED`、`CONFLICT`
 - `skm-extract-agent-skill-pack`：把一组本地 skill 提取成独立仓库骨架
 - `skm-find-skills`：发现外部可安装 skill
 - `skm-install-linked-agent-skills`：把外部 skill 包导入 `vendor/`
-- `skm-organize-agent-skills`：整理本地散乱 skill 的结构
+- `skm-organize-agent-skills`：先以 dry-run 方式盘点散落 skill，再按显式 `--apply` 执行安全迁移
 - `skm-release-agent-skill-pack`：发布前校验独立 skill 包
-- `skm-sync-agent-skills`：把运行态入口同步回声明态
+- `skm-sync-agent-skills`：把运行态入口同步回声明态，并在声明层有重名 skill 时中止
 - `skm-update-vendor-skills`：更新 vendor skill 包并重建入口
 
 ## 目录与运行时模型
@@ -258,6 +267,23 @@ skills/
 └── skm-update-vendor-skills/
 ```
 
+## 本地测试套件
+
+如果你想做一套本地、无网络依赖的验证，运行：
+
+```bash
+bash tests/run-all.sh
+```
+
+这套测试会覆盖 fake-home 场景下的：
+
+- doctor
+- organize
+- bootstrap
+- sync
+- install
+- update
+
 ## 使用示例
 
 ### 导入一个外部 skill 包
@@ -319,7 +345,7 @@ Agent 会触发 `skm-find-skills`，搜索公开的 skills.sh 生态，展示匹
 
 ### 2. 先诊断，再修复
 
-东西坏了的时候，不要急着手工删链接、重建目录。先跑一次 `skm-doctor-agent-skills`。诊断结果会告诉你哪些是 `OK`、`BROKEN`、`UNMANAGED`，这样你只需要修该修的部分。
+东西坏了的时候，不要急着手工删链接、重建目录。先跑一次 `skm-doctor-agent-skills`。诊断结果会告诉你哪些是 `OK`、`BROKEN`、`UNMANAGED`、`CONFLICT`，这样你只需要修该修的部分。
 
 ### 3. 一个 source of truth，两层入口
 

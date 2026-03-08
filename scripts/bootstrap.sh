@@ -10,6 +10,11 @@ CLAUDE_SKILLS_DIR="${CLAUDE_SKILLS_DIR:-$HOME_DIR/.claude/skills}"
 CODEX_SKILLS_DIR="${CODEX_SKILLS_DIR:-$HOME_DIR/.agents/skills}"
 FORCE=0
 
+fail() {
+  printf 'FAIL: %s\n' "$*" >&2
+  exit 1
+}
+
 usage() {
   cat <<'USAGE'
 Usage: bootstrap.sh [--force]
@@ -45,6 +50,43 @@ vendor_skill_root() {
   fi
 }
 
+sources_file="$(mktemp)"
+expected_file="$(mktemp)"
+trap 'rm -f "$sources_file" "$expected_file"' EXIT
+
+remember_skill_source() {
+  local entry_name="$1"
+  local source_dir="$2"
+  printf '%s\t%s\n' "$entry_name" "$source_dir" >> "$sources_file"
+}
+
+print_conflicts() {
+  awk -F '\t' '
+    {
+      key = $1 FS $2
+      if (seen[key]++) next
+      count[$1]++
+      sources[$1] = sources[$1] ? sources[$1] " ; " $2 : $2
+    }
+    END {
+      for (name in count) {
+        if (count[name] > 1) {
+          printf "%s\t%s\n", name, sources[name]
+        }
+      }
+    }
+  ' "$sources_file" | sort | while IFS=$'\t' read -r name sources; do
+    [[ -n "$name" ]] || continue
+    printf 'CONFLICT %s -> %s\n' "$name" "$sources"
+  done
+}
+
+assert_no_conflicts() {
+  local conflict_output
+  conflict_output="$(print_conflicts)"
+  [[ -z "$conflict_output" ]] || fail "$conflict_output"
+}
+
 link_named_target() {
   local entry_name="$1"
   local source_dir="$2"
@@ -66,8 +108,6 @@ link_named_target() {
   printf 'LINK %s -> %s\n' "$target_path" "$source_dir"
 }
 
-expected_file="$(mktemp)"
-trap 'rm -f "$expected_file"' EXIT
 remember_expected() {
   local entry_name="$1"
   grep -Fxq -- "$entry_name" "$expected_file" 2>/dev/null || printf '%s\n' "$entry_name" >> "$expected_file"
@@ -77,7 +117,10 @@ record_root_skill_names() {
   local source_root="$1"
   while read -r skill_dir; do
     [[ -n "$skill_dir" ]] || continue
-    remember_expected "$(basename "$skill_dir")"
+    local entry_name
+    entry_name="$(basename "$skill_dir")"
+    remember_expected "$entry_name"
+    remember_skill_source "$entry_name" "$skill_dir"
   done < <(iter_skill_dirs "$source_root")
 }
 
@@ -143,6 +186,7 @@ ensure_dir "$SHARED_EXPORT_DIR"
 record_root_skill_names "$SKM_DIR/skills"
 record_root_skill_names "$SKM_DIR/personal"
 record_vendor_expected "$SKM_DIR/vendor"
+assert_no_conflicts
 link_root_skill_dirs "$SKM_DIR/skills"
 link_root_skill_dirs "$SKM_DIR/personal"
 link_vendor_packages "$SKM_DIR/vendor"
